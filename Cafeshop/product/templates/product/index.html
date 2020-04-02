@@ -1,0 +1,52 @@
+{% extends "base.html" %} 
+{% block content %}
+    <div class="container">
+  <div class="row">
+    <div class="col-10">
+    </div>
+    <div class="col-2 order">
+                <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col" style="font-size: 2em;">Order</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                </tr>
+                <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                </tr>
+                <tr>
+                <th scope="row">3</th>
+                <td colspan="2">Larry the Bird</td>
+
+                </tr>
+            </tbody>
+            </table>
+    </div>
+  </div>
+</div>
+<style>
+            .order{
+                position: fixed; 
+                height: 100%;
+                right: 0px;
+                width: 100vw;
+                background-color: rgba(277, 277, 277, 0.8);; 
+                box-shadow: -8px 0px 9px 0px rgba(0,0,0,0.2);
+            }
+            .order tbody tr{
+              height: 20vh;
+            }
+            .order table{
+              border-color: black;
+            }
+        </style>
+{% endblock content %} 
+
+
+        
