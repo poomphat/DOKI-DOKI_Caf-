@@ -12,9 +12,8 @@
                         {{field}}
                     </div>
                     {% endfor %}
-                    <p>
-                        <button class="btn btn-primary" type="submit">บันทึกข้อมูล</button>
-                    </p>
+                        <button class="btn bottoncolor5 col" type="submit">บันทึกข้อมูล</button>
+
         </form>
 </div>
         <style>
@@ -25,7 +24,19 @@
             padding: 5%;
             border-radius: 10px;
             box-shadow:  20px 20px 60px #ff9966, -20px -20px 60px #ff5e62;
-                    }
+            }
+        .bottoncolor5{
+                color: rgb(82, 82, 82);
+                font-size: 1.3em;
+                margin-top: 30px;
+                border-radius: 20px;
+                background: linear-gradient(to right, #ff9966, #ff5e62);
+                transition: 0.25s ease;
+                width: 100%;
+            }
+        .bottoncolor5:hover{
+               transform: scale(1.07, 1.07);
+            }
         </style>
         
 {% endblock content %} 
