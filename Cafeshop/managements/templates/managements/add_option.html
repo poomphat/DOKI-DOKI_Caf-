@@ -1,7 +1,7 @@
 {% extends "base.html" %} 
 {% block content %}
  <div class="container addfruit col-8">
-<h1>เพิ่ม Topping</h1>
+<h2>เพิ่ม Topping</h2>
         <form method="POST" action="{% url 'add_option' %}">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
@@ -22,7 +22,7 @@
             color: rgb(82, 82, 82);
             margin-top: 20vh;
             background-color: rgba(233, 233, 233,0.8);
-            padding: 60px;
+            padding: 5%;
             border-radius: 10px;
             box-shadow:  20px 20px 60px #ff9966, -20px -20px 60px #ff5e62;
                     }
