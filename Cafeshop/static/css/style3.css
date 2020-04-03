@@ -13,7 +13,11 @@ p {
     line-height: 1.7em;
     color: #999;
 }
-
+#sidebarCollapse{
+    position: fixed;
+    top: 2%;
+    left: 2%;
+}
 a,
 a:hover,
 a:focus {
@@ -124,12 +128,12 @@ a:focus {
 
 #sidebar ul li a:hover {
     color: rgb(31, 31, 31);
-    background: rgb(173, 173, 173);
+    background: linear-gradient(to right, #ff9966, #ff5e62);
 }
 
 #sidebar ul li.active>a,
 a[aria-expanded="true"] {
-    color: rgb(39, 39, 39);
+    color: rgb(139, 139, 139);
     background: rgb(233, 233, 233);
 }
 
@@ -148,7 +152,7 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #5A5A5A;
+    background: rgb(226, 226, 226);
 }
 
 ul.CTAs {
@@ -166,7 +170,7 @@ ul.CTAs a {
 
 a.article,
 a.article:hover {
-    background: #5A5A5A !important;
+    background: rgb(190, 190, 190) !important;
     color: #fff !important;
 }
 

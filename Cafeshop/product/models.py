@@ -74,7 +74,6 @@ class Order_list(models.Model):
 class Fruit(models.Model):
     fruit_name = models.CharField( max_length=30)
     fruit_desc = models.CharField( max_length=50)
-    fruit_price = models.IntegerField()
 
 class Option(models.Model):
     option_name = models.CharField(max_length=50)

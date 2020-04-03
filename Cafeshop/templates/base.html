@@ -8,10 +8,6 @@
     <title>Coffee Shop</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style3.css'%}">
-    
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-    <!-- Scrollbar Custom CSS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
@@ -19,6 +15,7 @@
     body{
         background: linear-gradient(to right, #ff9966, #ff5e62);
         font-family: 'Kanit', sans-serif;
+        color: rgb(31, 31, 31);
     }
      .bottoncolor{
         color: black;
@@ -29,7 +26,12 @@
         margin: 10%;
         text-align:center;
         width: 80%;
-            }
+    }
+    #sidebarCollapse{
+    position: relative;
+    top: 2%;
+    left: 2%;
+}
     </style>
 
 </head>
@@ -41,14 +43,28 @@
             </div>
 
             <div class="sidebar-header">
-                <h3>Coffee Shop</h3>
+               <a href="{% url 'index' %}"> <h3>Coffee Shop</h3></a>
             </div>
             <ul class="list-unstyled">
                 <li>
                     <a>Report</a>
                 </li>
                 <li>
-                    <a>Management</a>
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Management</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li>
+                        <a href="{% url 'add_fruit' %}">Fruit</a>
+                    </li>
+                    <li>
+                        <a href="#">Coffee</a>
+                    </li>
+                    <li>
+                        <a href="#">Other</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'add_option' %}">Topping</a>
+                    </li>
+                </ul>
                 </li>
                 <li>
                     <a>Product</a>
@@ -58,13 +74,15 @@
                 </li>
             </ul>
         
-        </nav>
-
-        {% block content %}
-        {% endblock %}
-       <button type="button" id="sidebarCollapse" class="btn btn-dark" style="margin-top: 10px;margin-left: 10px;">
+        </nav> 
+        <button type="button" id="sidebarCollapse" class="btn btn-dark" style="margin-top: 10px;margin-left: 10px;">
                         <i class="fas fa-align-left"></i>
                     </button>
+        <div class="container">
+        {% block content %}
+        {% endblock %}
+        </div>
+      
     </div>
  
     <!-- jQuery CDN - Slim version (=without AJAX) -->
@@ -83,12 +101,10 @@
 
             $('#dismiss, .overlay').on('click', function () {
                 $('#sidebar').removeClass('active');
-                $('.overlay').removeClass('active');
             });
 
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').addClass('active');
-                $('.overlay').addClass('active');
                 $('.collapse.in').toggleClass('in');
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
