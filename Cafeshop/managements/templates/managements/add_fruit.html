@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
 {% block content %}
- <div class="container addfruit col-8">
+ <div class="container addfruit col-12">
 <h1>เพิ่มผลไม้</h1>
         <form method="POST" action="{% url 'add_fruit' %}">
                 {% csrf_token %}
