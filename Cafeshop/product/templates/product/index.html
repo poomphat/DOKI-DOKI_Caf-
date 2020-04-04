@@ -1,8 +1,34 @@
 {% extends "base.html" %} 
 {% block content %}
-    <div class="container">
   <div class="row">
-    <div class="col-10">
+    <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
+      <a href="Coffee">
+        <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
+          <div class="card-body">
+            <h3 class="card-title text-center" style="margin-top: 6vh;">Coffee</h3>
+          </div>
+        </div>
+        </a>
+        </div>
+        <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
+        <a href="Smoothie">
+        <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
+          <div class="card-body">
+            <h3 class="card-title text-center" style="margin-top: 6vh;">Smoothie</h3>
+          </div>
+        </div>
+        </a>
+        </div>
+
+      <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
+      <a href="Smoothie">
+        <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
+          <div class="card-body">
+            <h3 class="card-title text-center" style="margin-top: 6vh;">Other</h3>
+          </div>
+        </div>
+        </a>
+        </div>
     </div>
     <div class="col-2 order">
           <span style="font-size: 3vw;">Order</span>
@@ -51,10 +77,15 @@
             </table>
     </div>
   </div>
-</div>
 
 <style>
-
+        .cardselect{
+          box-shadow: 2px 2px 5px 0px rgba(46,46,46,1);
+          transition: 0.2s ease;
+        }
+        .cardselect:hover{
+          transform: scale(1.1, 1.1);
+        }
         .order{
             position: fixed; 
             height: 100%;
