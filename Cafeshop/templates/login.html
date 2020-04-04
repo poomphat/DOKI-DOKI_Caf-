@@ -11,19 +11,11 @@
     
     <!-- Bootstrap CSS CDN -->
        <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-    <style>
-    body{
-        background: linear-gradient(to right, #ff9966, #ff5e62);
-    }
-    </style>
-
 </head>
 <body>
- 
- 
- 
- <div class="container col-3">
-        <h1 style="text-align: center;">Welcome</h1>
+<div class="col-12">
+ <div class="container col-lg-3 col-sm-12">
+        <h2 style="text-align: center;">Welcome</h2>
         <br/><br/>
         {% if error %}
             <p class="text-danger">{{error}}</p>
@@ -45,12 +37,12 @@
         </form>
         <br/><br/>
     </div>
-
+     </div>
     </body>
 
     <style>
-            h1{
-                font-size: 4em;
+            h2{
+                font-size: 3em;
                 text-transform: uppercase;  
                 font-weight: bold;
                 background: linear-gradient(to right, #ff9966, #ff5e62);
@@ -60,11 +52,10 @@
             .container{
                 color: rgb(82, 82, 82);
                 margin-top: 20vh;
-                background-color: rgba(233, 233, 233,0.8);
+                background-color: rgba(233, 233, 233,0.9);
                 padding: 60px;
                 border-radius: 10px;
-                box-shadow:  20px 20px 60px #ff9966, 
-             -20px -20px 60px #ff5e62;
+                box-shadow: 4px 4px 5px 0px rgba(87,87,87,1);
             }
 
             .bottoncolor{
@@ -92,6 +83,8 @@
             }
             body{
                 font-family: 'Kanit', sans-serif;
+                background-image: url("{% static 'bg.jpg'%}");
+                background-size: cover;
             }
     </style>
 </html>
