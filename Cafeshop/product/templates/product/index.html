@@ -1,8 +1,9 @@
 {% extends "base.html" %} 
+{% load static %}
 {% block content %}
   <div class="row">
     <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
-      <a href="Coffee">
+      <a data-toggle="modal" data-target=".bd-example-modal-xl-coffee">
         <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
           <div class="card-body">
             <h3 class="card-title text-center" style="margin-top: 6vh;">Coffee</h3>
@@ -11,7 +12,7 @@
         </a>
         </div>
         <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
-        <a href="Smoothie">
+        <a data-toggle="modal" data-target=".bd-example-modal-xl-smoothie">
         <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
           <div class="card-body">
             <h3 class="card-title text-center" style="margin-top: 6vh;">Smoothie</h3>
@@ -21,7 +22,7 @@
         </div>
 
       <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
-      <a href="Smoothie">
+      <a data-toggle="modal" data-target=".bd-example-modal-xl-other">
         <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
           <div class="card-body">
             <h3 class="card-title text-center" style="margin-top: 6vh;">Other</h3>
@@ -30,6 +31,89 @@
         </a>
         </div>
     </div>
+        <div class="modal fade bd-example-modal-xl-coffee" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Coffee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                              <div class="row">
+                              <div class="col-12">
+                              <h2> Coffee Type</h2>
+                                <hr>
+                                <div class="col-7">
+                                  <select class="custom-select" id="inputGroupSelect01">
+                                      <option selected>Choose...</option>
+                                      <option value="1">Americano</option>
+                                      <option value="2">Espresso</option>
+                                      <option value="3">Capuchino</option>
+                                      <option value="4">Latte</option>
+                                      <option value="5">Mocha</option>
+                                    </select>
+                              </div>
+                              <h2 style="margin-top: 5vh;"> Sugar</h2>
+                                <hr>
+                                <div class="col-7">
+                                  <select class="custom-select" id="inputGroupSelect01">
+                                      <option selected>Choose...</option>
+                                      <option value="1">หวาานน้อย</option>
+                                      <option value="2">หวานปกติ</option>
+                                      <option value="3">หวานมาก</option>
+                                    </select>
+                              </div>
+                              <h2 style="margin-top: 5vh;"> Topping</h2>
+                              <hr>
+                              <div class="col-7">
+                                  <select class="custom-select" id="inputGroupSelect01">
+                                      <option selected>ไม่ใส่</option>
+                                      <option value="1">บุกบราว</option>
+                                      <option value="2">บุกบราวรสกาแฟ</option>
+                                      <option value="3">โอริโอ้</option>
+                                    </select>
+                              </div>
+                                </div>
+                                
+                              </div>
+                              
+                  </div>
+                </div>
+                </div>
+              </div>
+              <div class="modal fade bd-example-modal-xl-smoothie" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Smoothie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    ...
+                  </div>
+                </div>
+                </div>
+              </div>
+              <div class="modal fade bd-example-modal-xl-other" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Other</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    ...
+                  </div>
+                </div>
+                </div>
+              </div>
+
     <div class="col-2 order">
           <span style="font-size: 3vw;">Order</span>
           <hr color="black">
@@ -99,6 +183,12 @@
         .list_order{
           height: 20vh;
           font-size: 1vw;
+        }
+        .img-fluid{
+          border-radius: 20px;
+        }
+        .modal-header{
+          background: linear-gradient(to right, #ff9966, #ff5e62);
         }
         </style>
 {% endblock content %} 
