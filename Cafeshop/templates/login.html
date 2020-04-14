@@ -6,16 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="{% static 'favicon.ico'%}"/>
-    <title>Coffee Shop</title>
+    <title>Bus Stop Coffee</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style3.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css'%}">
     
     <!-- Bootstrap CSS CDN -->
        <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="col-12">
- <div class="container col-lg-3 col-sm-12">
+ <div class="container col-xl-4 col-md-6 col-12">
         <h2 style="text-align: center;">Welcome</h2>
         <br/><br/>
         {% if error %}
@@ -34,7 +35,7 @@
             <button type="submit" class="btn bottoncolor col">Login</button>
             <input type="hidden" name="next_url" value="{{next_url}}">
 
-            <a href="{% url 'logout' %}"class="nav-link bottoncolor2" >Sign in</a>
+            <a href="{% url 'register' %}"class="nav-link bottoncolor2" >Sign up</a>
         </form>
         <br/><br/>
     </div>

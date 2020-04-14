@@ -1,0 +1,122 @@
+{% extends "base.html" %} {% block content %}
+<div class="container listall">
+<div class="list col-12" style="margin-bottom: 5vh; margin-top: 1vh;">
+    <form class="form-inline" method="GET" action="{% url 'list_option'%}">
+        <input type="text" class="form-control col-lg-8 col-6" id="search" name="search" placeholder="ค้นหา">
+        <button class="btn bottoncolor78 col-4 col-lg-2" type="submit" style="margin-right:0px;">ค้นหา</button>
+    </form>
+</div>
+<div class="col-12 list_r">
+    <label class="titlelist col-lg-8 col-6">List Topping</label>
+    <a class="btn bottoncolor78 col-lg-2 col-4"  href="{% url 'add_option' %}" style="margin-right: 0px;">เพิ่ม Topping</a>
+        <div class="alltable">
+        <div class="listhead">
+        <table class="table  table-striped table-bordered table-light">
+            <thead class="thead-custom">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">ชื่อ Topping</th>
+                <th scope="col">คำอธิบาย</th>
+                <th scope="col"></th>
+                </tr>
+            </thead>
+            </table>
+        </div>
+        <div class="listbody">
+        <table class="table tablebo">
+        {% for di in option%}
+                <tr>
+                <td scope="row">{{ forloop.counter }}</td>
+                <td>{{di.option_name}}</td>
+                <td>{{di.description}}</td>
+                <td><a class="btn btn-danger text-white"> Delete </a></td>
+            </tr>
+            {% endfor %}
+        </table>
+            </div>
+        </div>
+   </div>
+</div>
+<style>
+    th,td{
+        width: 20%;
+    }
+    .thead-custom{
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            background-attachment:fixed;
+        }
+    .table-bordered > tbody > tr > th {
+            border: 1px solid transparent;
+        }
+    table.table-bordered{
+        border:1px solid transparent;
+        margin-top:20px;
+        }
+        table.table-bordered > thead > tr > th{
+            border:1px solid transparent;
+        }
+        table.table-bordered > tbody > tr > td{
+            border:1px solid transparent;
+        }
+        table{
+            font-size: 18px;
+        }
+        .listbody{
+            height: 45vh;
+            overflow-y:scroll;
+        }
+        .alltable{
+            width: 100%;
+        }
+    @media only screen and (max-width: 500px) {
+        .table, .list_r label, .list_r a,.list button{
+                font-size: 14px;
+            }
+        .list_r label{
+                font-size: 18px;
+        }
+        .table{
+            width: 400px;
+        }
+        .alltable{
+            overflow-x: auto;
+            width: 100%;
+        }
+        .listbody{
+            height: 45vh;
+            overflow-x:hidden;
+        }
+        th,td{
+            width: 20%;
+        }
+     }
+    .list{
+        background-color: rgba(253, 253, 253,0.9);
+        padding: 2%;
+        border-radius: 10px;
+        box-shadow: 4px 4px 5px 0px rgba(87,87,87,1);
+    }
+    .list_r{
+        background-color: rgba(253, 253, 253,0.9);
+        padding: 3%;
+        border-radius: 10px;
+        box-shadow: 4px 4px 5px 0px rgba(87,87,87,1);
+        margin-bottom: 5vh;
+    }
+    .bottoncolor78{
+                text-align: center;
+                color: rgb(82, 82, 82);
+                font-size: 24px;
+                border-radius: 20px;
+                background: linear-gradient(to right, #ff9966, #ff5e62);
+                transition: 0.25s ease;
+                margin-top: 0.5vh;
+                margin-bottom: 0.5vh;
+                margin-left: 10%;
+            }
+    .titlelist{
+        font-size: 30px;
+    }
+</style>
+
+{% endblock content %}

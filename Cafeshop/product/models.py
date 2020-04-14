@@ -1,16 +1,18 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Customer(models.Model):
-    name = models.CharField(max_length=255)
-    count_order = models.IntegerField()
+    user = models.OneToOneField(User,on_delete=models.CASCADE,default="")
+    address = models.TextField()
 
 class Promotion(models.Model):
     s_date = models.DateField(auto_now=True)
     e_date = models.DateField(auto_now=True)
     promo_desc = models.TextField()
     promo_status = models.BooleanField(default=False)
+
 class Reciept(models.Model):
     total_price = models.FloatField()
     date_time = models.DateTimeField(auto_now=True)
@@ -45,11 +47,13 @@ class Order(models.Model):
 class Drink_info(models.Model):
     
     DRINK_TYPE = (
-        ('Coffee', 'Coffee'),
-        ('Juice', 'Juice')
+        ('Hot', 'Hot'),
+        ('Iced', 'Iced'),
+        ('Frappe', 'Frappe')
     )
     
     d_name = models.CharField(max_length=255)
+    d_desc = models.CharField(max_length=255, default="")
     cost = models.IntegerField()
     drink_type = models.CharField(max_length=50, choices=DRINK_TYPE)
 
@@ -94,14 +98,8 @@ class Juice_fruit(models.Model):
 
 class Coffee_and_other(models.Model):
     
-    COFFEE_TYPE = (
-        ('Hot', 'Hot'),
-        ('Iced', 'Iced'),
-        ('Frappe', 'Frappe')
-    )
     
     specials = models.OneToOneField(Special, on_delete=models.CASCADE, primary_key=True)
-    coffee_type = models.CharField(max_length=50, choices=COFFEE_TYPE) 
     options = models.ManyToManyField(Option, through='Coffee_and_other_option')
 
 class Coffee_and_other_option(models.Model):
