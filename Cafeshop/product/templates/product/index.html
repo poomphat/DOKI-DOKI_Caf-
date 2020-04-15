@@ -1,32 +1,39 @@
 {% extends "base.html" %} {% load static %} {% block content %}
 <div class="row">
-    <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
+    <div class="col-lg-6 col-12 cad" style="margin-top: 6vh;">
         <a data-toggle="modal" data-target=".bd-example-modal-xl-coffee">
-            <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
-                <div class="card-body">
-                    <h3 class="card-title text-center" style="margin-top: 6vh;">Coffee</h3>
-                </div>
+            <div class="bg-light cardselect">
+                    <h3 style="margin-top: 6vh; line-height: 200px;">Coffee and Other</h3>
             </div>
         </a>
     </div>
-    <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
+    <div class="col-lg-6 col-12 beuti cad">
         <a data-toggle="modal" data-target=".bd-example-modal-xl-smoothie">
-            <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
-                <div class="card-body">
-                    <h3 class="card-title text-center" style="margin-top: 6vh;">Smoothie</h3>
-                </div>
+            <div class="bg-light cardselect">
+                    <h3 style="margin-top: 6vh; line-height: 200px;">Smoothie</h3>
             </div>
         </a>
     </div>
-
-    <div class="col-lg-3 col-sm-12" style="margin-top: 10vh;">
-        <a data-toggle="modal" data-target=".bd-example-modal-xl-other">
-            <div class="card bg-light cardselect" style="max-width: 18rem; height: 20vh;">
-                <div class="card-body">
-                    <h3 class="card-title text-center" style="margin-top: 6vh;">Other</h3>
-                </div>
+    <div class="col-12 list_r">
+        <label class="titlelist col-lg-8" style="margin-top: 2vh;">List Promotion</label>
+        <div class="alltable">
+            <div class="listbody">
+                <table class="table tablebo tablepro">
+                    {% for di in Promotion%}
+                    <tr><td><div class="row ">
+                        <div class="titlepromo col-3">{{ forloop.counter }}</div>
+                                <div class="col-8">
+                                    <h3>Promotion : {{di.promo_desc}}</h3>
+                                    <p class="text-primary">start at :{{di.s_date}}</p>
+                                    <p class="text-danger">end at :{{di.e_date}}</p>
+                                </div>
+                        </div>  
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
             </div>
-        </a>
+        </div>
     </div>
 </div>
 <div class="modal fade bd-example-modal-xl-coffee" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
@@ -105,16 +112,18 @@
                 </div>
                 <div class="row" id='fruitZone'>
                     {% for fruit in fruits %}
-                        <div class="col-sm-3">
-                            <button style='height:100px;width:100%;border:none;display:inline-block' class="btncool" name= "{{ fruit.fruit_name }}" onclick='selectFruitThis(event);recalDrinkPrice(event);' data-id="{{ fruit.id }}">
-                                {{ fruit.fruit_name }}</button>
-                        </div>
+                    <div class="col-sm-3">
+                        <button style='height:100px;width:100%;border:none;display:inline-block; margin-top: 1vh;' class="btncool"
+                            name="{{ fruit.fruit_name }}" onclick='selectFruitThis(event);recalDrinkPrice(event);'
+                            data-id="{{ fruit.id }}">
+                            {{ fruit.fruit_name }}</button>
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <h2 style="margin-top: 5vh;"> Topping <button type='button' class='btn btn-success'
-                            onclick="addTopping(2);recalDrinkPrice(event)">+</button></h2>
+                                onclick="addTopping(2);recalDrinkPrice(event)">+</button></h2>
                         <hr>
                     </div>
                     <div class="col-12" id='toppingZone-smoothie'>
@@ -132,73 +141,176 @@
         </div>
     </div>
 </div>
-<div class="modal fade bd-example-modal-xl-other" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Other</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="col-lg-3 col-5 order">
-    <span style="font-size: 3vw;">Order</span>
+<div class="col-xl-3 col-md-8 col-12 order" id="order">
+    <div style="height: 5vh;">
+        <h2 style="margin-top:1vh;">รายการที่สั่ง</h2>
+    </div>
     <hr color="black">
-    <div class="list_order">
+    <div class="list_order" id='unordered'>
+        <br>
+        <br>
+        <h3 class='text-center'>ไม่มีรายการที่สั่ง</h3>
+    </div>
+    <div class="list_order" id='ordered' style='display:none;'>
         <table class='table' id='cart'>
             <tr>
                 <th>#</th>
                 <th>รายละเอียด</th>
-                <th>จำนวน</th>
-                <th>ราคา</th>
             </tr>
         </table>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <h3 class='pt-1' style='width:50vw;'>เลือกโปรโมชั่น : </h3>
+                <select name="promotion" id="promotion" class='custom-select' style='width:50%;'>
+                    <option value="0">ไม่เลือก</option>
+                </select>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-8">
+                <h3>ราคาทั้งหมด : <span id='cartTotalPrice'></span> บาท</h3>
+            </div>
+            <div class='col-4'>
+                <button type='button' class='btn btn-success'
+                    style="float: right;position: relative;right: 0.75rem;" onclick='order()'>สั่งซื้อ</button>
+            </div>
+        </div>
+        <hr>
+        <br>
     </div>
-
+    <button class="btn btnsideorder" onclick='openorder();'>
+        <img style="height: 25px;" src="{% static 'shopping-cart-solid.svg' %}">
+    </button>
     </tbody>
     </table>
 </div>
 </div>
 <style>
-    .btncool{
+    .tablepro th ,.tablepro td{
+        width: 30%;
+    }
+    .tablepro th:first-child ,.tablepro td:first-child{
+        width: 10%;
+    }
+    .thead-custom {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+        background-attachment: fixed;
+    }
+    #cart tr {
+        background-color: #fff;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+    #cart tr:first-child {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+    }
+    .btnsideorder {
+        position: fixed;
+        right: 2%;
+        top: 1%;
+        width: 100px;
+        background-color: #ddd;
+        border: 3px solid #333;
+        transition: 0.2s ease;
+        height: 42px;
+    }
+
+    .btnsideorder:hover {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+        transform: scale(1.05, 1.05);
+    }
+
+    .btncool {
         transition: 0.15s ease;
     }
-    .btncool:hover{
-        transform: scale(1.1, 1.1);
+
+    .btncool:hover {
+        transform: scale(1.05, 1.05);
+    }
+    .titlelist {
+        font-size: 30px;
     }
     .cardselect {
         box-shadow: 2px 2px 5px 0px rgba(46, 46, 46, 1);
         transition: 0.2s ease;
+        text-align: center;
+        vertical-align: middle;
+        height: 200px;
+        border-radius: 10px;
     }
+    .beuti{
+        margin-top: 6vh;
+    }
+     @media only screen and (max-width: 990px) {
 
+        .beuti{
+            margin-top: 0vh;
+        }
+    }
+    .titlepromo{
+        width: 100px;
+        height: 100px;
+        background-color: #ddd;
+        text-align: center;
+        line-height: 100px;
+        border-radius: 20px;
+    }
+    .list_r {
+        background-color: rgba(253, 253, 253, 0.9);
+        border-radius: 10px;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        margin-bottom: 5vh;
+        margin-top: 8vh;
+    }
+    p{
+        color: black !important;
+    }
     .cardselect:hover {
-        transform: scale(1.1, 1.1);
+        transform: scale(1.02, 1.02);
         background: linear-gradient(to right, #ff9966, #ff5e62);
     }
 
     .order {
         position: fixed;
         height: 100%;
-        right: 0px;
+        right: -100%;
         top: 0px;
         width: 100%;
-        background-color: rgba(277, 277, 277, 0.8);
-        ;
+        background-color: #ddd;
         box-shadow: -8px 0px 9px 0px rgba(0, 0, 0, 0.2);
-        overflow: auto;
+        overflow-x: hidden;
+        z-index: 1000;
+    }
+    .table-bordered>tbody>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered {
+        border: 1px solid transparent;
+        margin-top: 20px;
+    }
+
+    table.table-bordered>thead>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered>tbody>tr>td {
+        border: 1px solid transparent;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 0 1vh;
+    }
+
+    #order {
+        transition: 0.25 ease;
     }
 
     .list_order {
         height: 20vh;
-        font-size: 1vw;
+        font-size: 22px;
     }
 
     .img-fluid {
@@ -210,46 +322,32 @@
     }
 </style>
 <script type="text/javascript">
-
-    var name = ''
-    var drink_id = ''
-    var drink_type = ''
-    var drink_price = ''
-    var drink_kind = ''
-    var sweetness = ''
-    var topping_list = Array()
-    var cart = Array()
-    var sweetness_name = {
-        'normalsweet':'หวานปกติ',
-        'lesssweet':'หวานน้อย',
-        'moresweet':'หวานมาก',
-    } 
-    var fruit = Array()
-    function addTopping(zone) {
+        function addTopping(zone) {
         var toppingZone = ''
-        if (zone == 1){
+        if (zone == 1) {
             toppingZone = document.getElementById('toppingZone-coffee')
-        }
-        else if (zone == 2){
+        } else if (zone == 2) {
             toppingZone = document.getElementById('toppingZone-smoothie')
         }
         topping = document.createElement('div')
         topping.style.margin = '10px'
         topping.className = 'addTopping'
-        topping.innerHTML = "<select class=\'form-control\' id=\'inputGroupSelect01\' style=\'width:15vw;display:inline-block\'>" +
+        topping.innerHTML =
+            "<select class=\'form-control\' id=\'inputGroupSelect01\' style=\'width:15vw;display:inline-block\'>" +
             {% for option in options %}
-            "<option value='{{option.id}}' data-price='{{option.price}}'>{{option.option_name}}</option>" +
-            {% endfor %}
-            '</select>' +
-            "<input type='number' name='amount' class=\'form-control mt-1 ml-3 mr-3\' id='amount' value=\'1\' min=\'1\' max=\'5\' oninput=\'checkMT5(event);recalDrinkPrice(event)\' style=\'width:10vw;display:inline-block\' oninput=\'recalDrinkPrice(event)\'>" +
-            "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);recalDrinkPrice(event);' style=\'display:inline-block\'>-</button>"
-        toppingZone.appendChild(topping)
-        }
+    "<option value='{{option.id}}' data-price='{{option.price}}'>{{option.option_name}}</option>" +
+        {% endfor %}
+    '</select>' +
+        "<input type='number' name='amount' class=\'form-control mt-1 ml-3 mr-3\' id='amount' value=\'1\' min=\'1\' max=\'5\' oninput=\'checkMT5(event);recalDrinkPrice(event)\' style=\'width:10vw;display:inline-block\' oninput=\'recalDrinkPrice(event)\'>" +
+        "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);recalDrinkPrice(event);' style=\'display:inline-block\'>-</button>"
+    toppingZone.appendChild(topping)
+    }
 
     function deleteTopping(element) {
         parent = element.parentNode
         parent.remove()
     }
+
     function addMenu(type) {
         var a = document.getElementsByClassName("Iced");
         var b = document.getElementsByClassName("Hot");
@@ -265,222 +363,18 @@
             x[0].className = 'btn btn-primary ' + type;
             menu = document.createElement('div');
             menu.className = 'col-sm-3 menu';
-            menu.innerHTML = "<button class=\'btncool\' style=\'height:100px;width:100%;border:none;display:inline-block\' onclick=\'selectThis(event)\'>" +
+            menu.innerHTML =
+                "<button class=\'btncool\' style=\'height:100px;width:100%;border:none;display:inline-block;margin-top: 1vh;\' onclick=\'selectThis(event)\'>" +
                 "{{ drink.d_name }}</button>" +
                 "<p style='display:none' id='drink_id'>{{ drink.id }}</p>" +
                 "<p style='display:none' id='type'>{{ drink.drink_type }}</p>" +
                 "<p style='display:none' id='cost'>{{ drink.cost }}</p>"
             menuZone.appendChild(menu)
         }
-
         {% endfor %}
     }
-    function deleteMenu() {
-        document.querySelectorAll('.menu').forEach(el => el.remove());
-    }
-    function deleteAllTopping() {
-        document.querySelectorAll('.addTopping').forEach(el => el.remove());
-    }
-    function addToCart() {
-        if (!drink_id == '') {
-            addtoppingElement = document.querySelectorAll('.addTopping')
-            var temp_price = 0
-            for (var i = 0; i < addtoppingElement.length; i++) {
-                first = addtoppingElement[i].firstElementChild
-                price = Number(first.options[first.selectedIndex].dataset.price)
-                id = first.options[first.selectedIndex].value
-                name = first.options[first.selectedIndex].innerText
-                next = first.nextElementSibling
-                amount = Number(next.value)
-                temp_price += Number(price)*amount
-                topping_list.push({
-                    id: id,
-                    name: name,
-                    price: price,
-                    amount: amount
-                })
 
-            }
-            var drink = {
-                id: drink_id,
-                name: drink_name,
-                type: drink_type,
-                kind: drink_kind,
-                sweetness: sweetness,
-                price: drink_price,
-                amount:1,
-                price_incTopping: temp_price + drink_price,
-                fruit:fruit,
-                topping_list: topping_list
-            }
-            cart.push(drink)
-            $('.bd-example-modal-xl-coffee').modal('hide')
-            $('.bd-example-modal-xl-smoothie').modal('hide')
-            reset()
-            cartList()
-        }
-        else {
-            document.getElementById('nonDrinkAddtoCard').style.display = 'inline';
-        }
-    
-    }
-    function clearallcoffee(){
-       var O = document.querySelectorAll('.btncool');
-       for (var i = 0; i < O.length; i++) {
-           O[i].style.background = "#EFEFEF";
-           O[i].style.color  = "black";
-       }
-    }
-    function selectThis(event) {
-        
-        target = event.target.parentNode
-        target = target.firstElementChild
-        
-        drink_name = target.innerText
-        target = target.nextElementSibling
-        drink_id = Number(target.innerText)
-        target = target.nextSibling
-        drink_type = target.innerText
-        target = target.nextSibling
-        drink_price = Number(target.innerText)
-        drink_kind = 'coffee'
-        
-        sweet_select = document.getElementsByClassName('sweetness')[0]
-        sweetness = sweet_select.options[sweet_select.selectedIndex].value
-        changeDrinkPrice(drink_price)
-        clearallcoffee()
-        event.target.style.background = "#44D362";
-        event.target.style.color  = "white";
-    }
-    function recalDrinkPrice(event) {
-        addtoppingElement = document.querySelectorAll('.addTopping')
-        var temp_price = 0
-        for (var i = 0; i < addtoppingElement.length; i++) {
-            first = addtoppingElement[i].firstElementChild
-            price = first.options[first.selectedIndex].dataset.price
-            next = first.nextElementSibling
-            price = Number(price) * Number(next.value)
-            temp_price += price
-
-        }
-        changeDrinkPrice(drink_price + temp_price)
-    }
-    function reset() {
-        deleteMenu()
-        deleteAllTopping()
-        changeDrinkPrice(0)
-        clearallcoffee()    
-        drink_name = ''
-        drink_id = ''
-        drink_type = ''
-        drink_price = ''
-        sweetness = ''
-        drink_kind = ''
-        topping_list = Array()
-        fruit = Array()
-
-    }
-    function changeSweet(event) {
-        var select = event.target
-        var option = select.options[select.selectedIndex]
-        sweetness = select.options[select.selectedIndex].value
-    }
-
-    function cartList(){
-        clearCart()
-        tablecart = document.getElementById('cart')
-        for(var i = 0; i < cart.length; i++){
-            tr = document.createElement('tr')
-            tr.className = 'cartItem'
-            td = document.createElement('td')
-            td.innerText = i+1
-            tr.appendChild(td)
-            td = document.createElement('td')
-            p = document.createElement('p')
-            if(cart[i].kind == 'coffee'){
-                p.innerHTML = cart[i].name+'('+cart[i].type+')'
-                td.appendChild(p)
-                hr = document.createElement('hr')
-                td.appendChild(hr)
-                ul = document.createElement('ul')
-                li = document.createElement('li')
-                li.innerHTML = sweetness_name[cart[i].sweetness]
-                ul.appendChild(li)
-                td.appendChild(ul) 
-            }
-            else if(cart[i].kind == 'juice'){
-                p.innerHTML = cart[i].name
-                td.appendChild(p)
-                hr = document.createElement('hr')
-                td.appendChild(hr)
-                ul = document.createElement('ul')
-                for(var j = 0; j<cart[i].fruit.length; j++){
-                li = document.createElement('li')
-                li.innerHTML = cart[i].fruit[j].name
-                ul.appendChild(li)
-                td.appendChild(ul) 
-                }
-            }
-            if(cart[i].topping_list.length > 0){
-                hr = document.createElement('hr')
-                td.appendChild(hr)
-                ul = document.createElement('ul')
-                for(var j = 0; j<cart[i].topping_list.length; j++){
-                    li = document.createElement('li')
-                    li.innerHTML = cart[i].topping_list[j].name+'('+cart[i].topping_list[j].amount+')'
-                    ul.appendChild(li)
-                    td.appendChild(ul) 
-                    }
-                td.appendChild(ul)
-            }    
-            tr.appendChild(td)
-            td = document.createElement('td')
-            td.innerText = cart[i].amount
-            tr.appendChild(td)
-            td = document.createElement('td')
-            td.innerText = cart[i].amount*cart[i].price_incTopping
-            tr.appendChild(td)
-            tablecart.appendChild(tr)
-            
-        }
-
-    }
-    function clearCart(){
-        document.querySelectorAll('.cartItem').forEach(el => el.remove());
-    }
-    function checkMT5(event){
-        if (Number(event.target.value) > 5){
-            event.target.value = 5;
-        }
-    }
-    function selectFruitThis(event){
-        
-        target = event.target
-        drink_name = 'Juice'
-        drink_id = 'don\'t know'
-        drink_kind = 'juice'
-        drink_price = 45
-        if(!(fruit.some(f => f.id == target.dataset.id))){
-            fruit.push({
-
-            id:target.dataset.id,
-            name:target.innerText
-
-            })
-            target.style.background = "#44D362";
-            target.style.color  = "white";
-        }
-        else{
-            fruit = fruit.filter(f => f.id !== target.dataset.id)
-            target.style.background = "#EFEFEF";
-            target.style.color  = "black";
-        }
-    }
-    function changeDrinkPrice(price){
-        priceAll = document.getElementsByClassName('DrinkPrice')
-        for(var i=0; i<priceAll.length; i++){
-            priceAll[i].innerText = price
-        }
-    }
 </script>
+<script defer src="{% static 'js/script.js'%}">
+    </script>
 {% endblock content %}

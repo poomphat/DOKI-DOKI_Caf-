@@ -9,9 +9,14 @@
     <title>Bus Stop Coffee</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style3.css'%}">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+        integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous">
+    </script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+        integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous">
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css'%}">
     <style>
         body {
@@ -20,7 +25,7 @@
             background-image: url("{% static 'bg.jpg'%}");
             background-size: cover, contain;
         }
-        
+
         .bottoncolor {
             color: black;
             font-size: 1.3em;
@@ -31,36 +36,42 @@
             text-align: center;
             width: 80%;
         }
-        
+
         #sidebarCollapse {
-            position: relative;
-            top: 2%;
+            position: fixed;
+            top: 1%;
             left: 1%;
             width: 100px;
             height: auto;
-            background-color: rgba(253, 253, 253, 0.9);
+            background-color: #ddd;
             transition: 0.2s ease;
+            border: 3px solid #333;
         }
-        
+
         #sidebarCollapse:hover {
             transform: scale(1.1, 1.1);
             background: linear-gradient(to right, #ff9966, #ff5e62);
         }
-        
+
         .wrapper {
             height: 100vh;
         }
-        .username {           
+        #sidebar{
+            z-index: 1000;
+        }
+        .username {
             margin-bottom: -10px;
             padding-top: 15px;
             padding-left: 10px;
         }
+
         .f {
             color: #ff9966;
             font-size: 1rem;
             width: 0%;
         }
-        .l {        
+
+        .l {
             color: #ff5f62;
             font-size: 1rem;
             width: 0%;
@@ -86,7 +97,8 @@
                     <a>Report</a>
                 </li>
                 <li>
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Management</a>
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle">Management</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
                             <a href="{% url 'list_fruit' %}">Fruit</a>
@@ -97,24 +109,27 @@
                         <li>
                             <a href="{% url 'list_option' %}">Topping</a>
                         </li>
+                        <li>
+                            <a href="{% url 'add_promotion' %}">Promotion</a>
+                        </li>
                     </ul>
                 </li>
                 <li>
                     <a>Account</a>
                 </li>
-        
+
 
                 <li>
                     <div class="username">
                         <table>
-                            <tbody>    
+                            <tbody>
                                 {% if user.is_authenticated %}
-                                    <tr>
-                                        <td class="f">{{user.first_name}}</td>
-                                        <td class="l">{{user.last_name}}</td>  
-                                    </tr>                  
+                                <tr>
+                                    <td class="f">{{user.first_name}}</td>
+                                    <td class="l">{{user.last_name}}</td>
+                                </tr>
                                 {% endif %}
-                            </tbody> 
+                            </tbody>
                         </table>
                     </div>
                     <a href="{% url 'logout' %}" class="nav-link bottoncolor">Logout</a>
@@ -122,34 +137,44 @@
             </ul>
 
         </nav>
-        <button type="button" id="sidebarCollapse" class="btn" style="margin-top: 10px;margin-left: 10px;">
-                        <i class="fas fa-bars fa-lg"></i>
-                    </button>
+        
         <div class="container">
             {% block content %} {% endblock %}
         </div>
-
+    <button type="button" id="sidebarCollapse" class="btn"  style="z-index: 999;">
+            <img style="height: 25px;" src="{% static 'bars-solid.svg' %}">
+        </button>
     </div>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
     <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous">
+    </script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous">
+    </script>
     <!-- jQuery Custom Scroller CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
+    </script>
+    <!-- AIXOS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("#sidebar").mCustomScrollbar({
                 theme: "minimal"
             });
 
-            $('#dismiss, .overlay').on('click', function() {
+            $('#dismiss, .overlay').on('click', function () {
                 $('#sidebar').removeClass('active');
             });
 
-            $('#sidebarCollapse').on('click', function() {
+            $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').addClass('active');
                 $('.collapse.in').toggleClass('in');
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');

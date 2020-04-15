@@ -1,15 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container addfruit col-12">
-        {% if o.id %}
-            <form method="POST" action="{% url 'edit_option' pk=o.id %}">
-            <h1>แก้ไข Topping</h1>
-        {% else %}
-            <form method="POST" action="{% url 'add_option' %}">
-            <h1>เพิ่ม Topping</h1>
-        {% endif %}
+    <h2>เพิ่ม Promotion</h2>
     <hr>
-    <form method="POST" action="{% url 'add_option' %}">
+    <form method="POST" action="{% url 'add_promotion' %}">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {% for field in form %}
@@ -53,5 +47,7 @@
         transform: scale(1.07, 1.07);
     }
 </style>
+<script>
 
+</script>
 {% endblock content %}

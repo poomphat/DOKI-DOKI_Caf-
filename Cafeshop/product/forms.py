@@ -1,5 +1,5 @@
 from django import forms
-from product.models import Fruit , Option , Drink_info,Customer
+from product.models import Fruit , Option , Drink_info,Customer,Promotion
 from django.contrib.auth.models import User
 # Create the form class.
 
@@ -103,3 +103,21 @@ class DrinkForm(forms.ModelForm):
     class Meta:
         model = Drink_info
         fields = ('d_name', 'd_desc', 'drink_type', 'cost') 
+
+class PromotionForm(forms.ModelForm):
+    s_date =  forms.DateTimeField(widget=forms.DateTimeInput(
+        attrs={'type':'date', 'class' : 'form-control col-12' ,'placeholder' : 'วันที่เริ่ม promotion'}),
+        label='Promotion start:'
+    )
+    e_date =  forms.DateTimeField(widget=forms.DateTimeInput(
+        attrs= {'type':'date', 'class' : 'form-control col-12' ,'placeholder' : 'วันที่หมด promotion'})
+        ,label='Promotion end:'
+    )
+    promo_desc = forms.CharField(
+        max_length=255,
+        widget=forms.TextInput(attrs={ 'class' : 'form-control col-12' , 'placeholder' : 'คำอธิบาย Promotion' }),
+        label='Promotion description:'
+        )
+    class Meta:
+        model = Promotion
+        fields = ('s_date','e_date','promo_desc')

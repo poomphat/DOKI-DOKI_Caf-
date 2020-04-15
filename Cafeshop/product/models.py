@@ -8,14 +8,10 @@ class Customer(models.Model):
     address = models.TextField()
 
 class Promotion(models.Model):
-    s_date = models.DateField(auto_now=True)
-    e_date = models.DateField(auto_now=True)
+    s_date = models.DateField()
+    e_date = models.DateField()
     promo_desc = models.TextField()
-    promo_status = models.BooleanField(default=False)
-
-class Reciept(models.Model):
-    total_price = models.FloatField()
-    date_time = models.DateTimeField(auto_now=True)
+    promo_status = models.BooleanField(default=True)
  
 class Staff(models.Model):
     st_name = models.CharField(max_length=255)
@@ -30,19 +26,14 @@ class Order(models.Model):
         ('Local_buy', 'Local buy'),
         ('Online_buy', 'Online buy')
     )
-    
-    TYPE_PAY = (
-        ('Cash', 'Cash'),
-        ('Credit', 'Credit')
-    )
 
+    total_price = models.FloatField(default=0)
     order_type = models.CharField(max_length=255, choices=TYPE_BUY)
-    Order_payment = models.CharField(max_length=255, choices=TYPE_PAY)
     date = models.DateTimeField(auto_now=True)
     promo_id = models.ForeignKey(Promotion, on_delete=models.CASCADE)
     c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    receipt_id = models.ForeignKey(Reciept, on_delete=models.CASCADE)
     queue = models.ForeignKey(Queue_info, on_delete=models.CASCADE)
+    finish_flag = models.BooleanField(default=False)
 
 class Drink_info(models.Model):
     
@@ -98,7 +89,7 @@ class Juice_fruit(models.Model):
 
 class Coffee_and_other(models.Model):
     
-    
+    sweetness = models.CharField(max_length=50, default=None)
     specials = models.OneToOneField(Special, on_delete=models.CASCADE, primary_key=True)
     options = models.ManyToManyField(Option, through='Coffee_and_other_option')
 
@@ -110,7 +101,7 @@ class Coffee_and_other_option(models.Model):
 
 class Juice_option(models.Model):
     juice = models.ForeignKey(Juice, on_delete=models.CASCADE)
-    fruit = models.ForeignKey(Option, on_delete=models.CASCADE)
+    option = models.ForeignKey(Option, on_delete=models.CASCADE)
     amount = models.IntegerField()
 
 
