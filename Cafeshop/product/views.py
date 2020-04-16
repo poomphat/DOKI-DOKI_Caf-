@@ -88,6 +88,7 @@ def api(request):
         order_list = Order_list()
         order_list.amount = item['amount']
         order_list.unit_price = item['price_incTopping']
+        print(item['id'])
         order_list.d_id = Drink_info.objects.get(pk=item['id'])
         special = Special(special_type=item['kind'].capitalize()) 
         special.save()
@@ -133,62 +134,72 @@ def delete_WARRING_PLZ_DONT_USE_THIS(request):
 def queue(request):
     orders = Order.objects.all()
     queue = []
+    sweetness_name = {
+    'normalsweet': 'หวานปกติ',
+    'lesssweet': 'หวานน้อย',
+    'moresweet': 'หวานมาก',
+    }
     for order in orders:
         order_lists = Order_list.objects.filter(order_id=order.id)
+        item_list = []
         item = {}
         for order_list in order_lists:
             item = {
-                'id':order_list.d_id,
-                'order_id':order_list.order_id,
+                'id':order_list.d_id_id,
+                'order_id':order_list.order_id_id,
                 'unit_price':order_list.unit_price,
-                'sweetness':'',
-                'fruit':'',
-                'topping':'',
+                'sweetness':None,
+                'fruits':None,
+                'toppings':None,
                 'amount':order_list.amount,
+                'picture':Drink_info.objects.get(pk=order_list.d_id_id).picture,
+                'name':Drink_info.objects.get(pk=order_list.d_id_id).d_name
             }
             special = Special.objects.get(pk=order_list.special_id_id)
             if special.special_type == 'Coffee':
-                coffee = Coffee.objects.get(pk=special.id)
-                item['sweetness'] = coffee.sweetness
-                co = coffee.option.all()
+                coffee = Coffee_and_other.objects.get(pk=special.id)
+                item['sweetness'] = sweetness_name[coffee.sweetness]
+                toppings = coffee.options.all()
                 topping_items = []
-                for topping in co:
-                    option = Option.objects.get(pk=topping.option_id)
+                for topping in toppings:
+                    co = Coffee_and_other_option.objects.get(Coffee_and_other=coffee, option=topping)
                     topping_items.append({
-                        'name':option.name,
-                        'amount':topping.amount
+                        'name':topping.option_name,
+                        'amount':co.amount
                     })
-                item['topping'] = topping_items
+                item['toppings'] = topping_items
             elif special.special_type == 'Juice':
                 juice = Juice.objects.get(pk=special.id)
-                jo = juice.option.all()
+                toppings = juice.options.all()
                 topping_items = []
-                for topping in jo:
-                    option = Option.objects.get(pk=topping.option_id)
+                for topping in toppings:
+                    jo = Juice_option.objects.get(juice=juice, option=topping)
                     topping_items.append({
-                        'name':option.name,
-                        'amount':topping.amount
+                        'name':topping.option_name,
+                        'amount':jo.amount
                     })
-                item['topping'] = topping_items
-                jf = juice.fruit.all()
+                item['toppings'] = topping_items
+                fruits = juice.fruits.all()
                 fruit_items = []
-                for juicefruit in jf:
-                    fruit = Option.objects.get(pk=juicefruit.option_id)
+                for fruit in fruits:
+                    print(fruit)
+                    jf = Juice_fruit.objects.get(juice=juice, fruit=fruit)
                     fruit_items.append({
-                        'name':fruit.name,
-                        'amount':juicefruit.amount
+                        'name':fruit.fruit_name,
+                        'amount':jf.amount
                     })
-                item['fruit'] = fruit_items
+                item['fruits'] = fruit_items
+            item_list.append(item)
         order_list = {
             'id':order.id,
             'date':order.date,
             'promo_id':order.promo_id,
             'finish':order.finish_flag,
-            'item':item,
+            'items':item_list,
+            'time':order.date.strftime('%H:%M'),
             'total_price':order.total_price
         }
         queue.append(order_list)
-    print(queue)
     context = {
         'queues':queue
     }

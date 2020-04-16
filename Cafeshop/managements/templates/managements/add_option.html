@@ -2,14 +2,14 @@
 {% block content %}
 <div class="container addfruit col-12">
         {% if o.id %}
-            <form method="POST" action="{% url 'edit_option' pk=o.id %}">
+            <form method="POST" action="{% url 'edit_option' pk=o.id %}" enctype="multipart/form-data">
             <h1>แก้ไข Topping</h1>
         {% else %}
-            <form method="POST" action="{% url 'add_option' %}">
+            <form method="POST" action="{% url 'add_option' %}" enctype="multipart/form-data">
             <h1>เพิ่ม Topping</h1>
         {% endif %}
     <hr>
-    <form method="POST" action="{% url 'add_option' %}">
+    <form method="POST" action="{% url 'add_option' %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {% for field in form %}

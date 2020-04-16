@@ -62,10 +62,12 @@ class Order_list(models.Model):
 
 
 class Fruit(models.Model):
+    picture = models.ImageField(default='Fruit/default.png',upload_to='Fruit/',null=True,blank=True)
     fruit_name = models.CharField( max_length=30)
     fruit_desc = models.CharField( max_length=50)
 
 class Option(models.Model):
+    picture = models.ImageField(default='Option/default.png',upload_to='Option/',null=True,blank=True)
     option_name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     price = models.FloatField()

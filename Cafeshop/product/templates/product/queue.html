@@ -2,37 +2,90 @@
 <div class="container listall">
     <div class="col-12 list_r">
         <label class="titlelist col-lg-8 col-6">รายการคิว</label>
+        <hr>
         <div class="alltable">
             <div class="listbody">
-                <table class="table tablebo">
-                    {% for queue in queues %}
-                    <tr><td><div class="row ">
-                        <div class="titledrink col-3">{{ forloop.counter }}</div>
-                                <div class="col-8">
-                                    <p></p>
-                                    <p class="text-primary"></p>
+                {% for queue in queues %}
+                <div class="row">
+                    <div class="titledrink col-3" data-toggle="collapse" href="#collapse{{ forloop.counter }}"
+                        role="button" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                        <p font-size="28px">{{ forloop.counter }}</p>
+                    </div>
+                    <div class="col-8">
+                        <p class="text-primary">หมายเลขออเดอร์ : {{queue.id}}</p>
+                        <p class="text-secondary">วันที่ : {{queue.date.date}}</p>
+                        <p class="text-secondary">เวลา : {{queue.time}}น.</p>
+                        <p class="text-success">ราคารวม : {{queue.total_price}}</p>
+                        <button type='button' class='btn btn-primary' data-toggle="collapse"
+                            href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false"
+                            aria-controls="collapse{{ forloop.counter }}">ดูรายละเอียด</button>
+                        <button type='button' class='btn btn-warning'>เสร็จสิ้น</button>
+                    </div>
+                    <div class="collapse mb-3 col-12" id="collapse{{ forloop.counter }}">
+                        <hr>
+                        <div class="card card-body">
+                            {% for item in queue.items %}
+                            <div class="container-fluid" style="margin-bottom: 4vh;">
+                                <div class="row">
+                                    <div class="titledrink col-3 queue_item"
+                                        style="margin-top: 1vh; background-image:url('../managements{{ item.picture.url }}');">
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-primary">{{item.name}}</p>
+                                        <p class="text-secondary">ราคารวมท็อปปิ้ง : {{item.unit_price}}</p>
+                                        {% if item.sweetness %}
+                                        <p class="text-secondary">ความหวาน : {{item.sweetness}}</p>
+                                        {% endif %}
+                                        {% if item.fruits %}
+                                        <p class="text-secondary">ผลไม้ที่ใส่ : </p>
+                                        <ul>
+                                            {% for fruit in item.fruits %}
+                                            <li class="text-secondary">{{fruit.name}}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                        {% if item.toppings %}
+                                        <p class="text-secondary">Topping ที่ใส่ : </p>
+                                        <ul>
+                                            {% for topping in item.toppings %}
+                                            <li class="text-secondary">{{topping.name}}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                        </div>  
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
+                            </div>
+                            <hr>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                {% endfor %}
+
             </div>
+
         </div>
+
     </div>
 </div>
 <style>
-    .titledrink{
+    .titledrink {
         width: 100px;
-        height: 150px;
+        height: 220px;
         background-color: #ddd;
         text-align: center;
-        line-height: 150px;
+        line-height: 220px;
         border-radius: 20px;
+        margin-left: 1vw;
+         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     }
-    p{
+    
+
+    p {
         font-size: 20px;
     }
+
     th,
     td {
         width: 20%;
@@ -52,6 +105,11 @@
         margin-top: 20px;
     }
 
+    .queue_item {
+        background-position: center;
+        background-size: cover;
+    }
+
     table.table-bordered>thead>tr>th {
         border: 1px solid transparent;
     }
@@ -65,7 +123,7 @@
     }
 
     .listbody {
-        height: 50vh;
+        height: 70vh;
 
     }
 
@@ -74,6 +132,11 @@
         overflow-x: hidden;
     }
 
+     @media only screen and (max-width: 1400px) {
+         .titledrink {
+            margin-left: 3vw;
+        }
+     }
     @media only screen and (max-width: 500px) {
 
         .table,
@@ -90,12 +153,18 @@
         .table {
             width: 400px;
         }
-        p{
+
+        p {
             font-size: 14px;
         }
+
         th,
         td {
             width: 20%;
+        }
+
+        .titledrink {
+            margin-left: 5vw;
         }
     }
 
@@ -129,7 +198,8 @@
     .titlelist {
         font-size: 30px;
     }
-    .listall{
+
+    .listall {
         margin-top: 10vh;
     }
 </style>

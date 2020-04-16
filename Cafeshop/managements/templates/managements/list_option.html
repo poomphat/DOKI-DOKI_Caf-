@@ -3,25 +3,32 @@
     <div class="list col-12" style="margin-bottom: 5vh; margin-top: 1vh;">
         <form class="form-inline" method="GET" action="{% url 'list_option'%}">
             <input type="text" class="form-control col-lg-8 col-6" id="search" name="search" placeholder="ค้นหา">
-            <button class="btn bottoncolor78 col-4 col-lg-2" type="submit" style="margin-right:0px;">ค้นหา</button>
+            <button class="btn bottoncolor78 col-4 col-lg-2" type="submit" style="margin-right:0px;">
+                <img style="height:25px; filter: invert(0.2);" src="{% static 'search-solid.svg' %}">
+            </button>
         </form>
     </div>
     <div class="col-12 list_r">
         <label class="titlelist col-lg-8 col-6">List Topping</label>
-        <a class="btn bottoncolor78 col-lg-2 col-4" href="{% url 'add_option' %}" style="margin-right: 0px;">เพิ่ม
-            Topping</a>
+        <a class="btn bottoncolor78 col-lg-2 col-4" href="{% url 'add_option' %}">
+            <img style="height: 25px; filter: invert(0.2);" src="{% static 'plus-solid.svg' %}">
+        </a>
         <div class="alltable">
             <div class="listbody">
-                <table class="table tablebo">
+                <table class="table tablebo" style="margin-left: 1vw;">
                     {% for di in option%}
                     <tr><td><div class="row ">
-                        <div class="titledrink col-3"></div>
-                                <div class="col-8">
+                        <div class="titledrink col-3" style="background-image: url('..{{ di.picture.url }}');"></div>
+                                <div class="col-8" style="margin-left: 1vw;">
                                     <p style="font-weight: bold;">{{ forloop.counter }}). ชื่อ : {{di.option_name}}</p>
                                     <p class="text-primary">คำอธิบาย : {{di.description}}</p>
                                     <p class="text-primary">ราคา : {{di.price}}</p>
-                                    <a href="{% url 'edit_option' di.id %}" class="btn btn-warning text-white"> Edit </a>
-                                    <a href="{% url 'delete_option' di.id %}" class="btn btn-danger text-white"> Delete </a>
+                                    <a href="{% url 'edit_option' di.id %}" class="btn btn-warning text-white">
+                                        <img style="height:20px; filter: invert(1);" src="{% static 'wrench-solid.svg' %}">
+                                    </a>
+                                    <a href="{% url 'delete_option' di.id %}" class="btn btn-danger text-white">
+                                        <img style="height:20px; filter: invert(1);" src="{% static 'trash-alt-solid.svg' %}">
+                                    </a>
                                 </div>
                         </div>  
                         </td>
@@ -36,7 +43,6 @@
     .titledrink{
         width: 100px;
         height: 150px;
-        background-color: #ddd;
         text-align: center;
         line-height: 150px;
         border-radius: 20px;
@@ -44,8 +50,11 @@
         background-size: cover;
         transition: 0.15s ease;
         background-position: center;
+         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
     }
-
+    .titledrink:hover{
+        transform: scale(1.05,1.05);
+    }
     p{
         font-size: 20px;
     }

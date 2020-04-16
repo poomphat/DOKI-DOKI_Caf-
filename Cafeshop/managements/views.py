@@ -22,7 +22,7 @@ def add_promotion(request):
 @login_required
 def add_fruit(request):
     if request.method == 'POST':
-        form = FruitForm(request.POST)
+        form = FruitForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return redirect('list_fruit')
@@ -38,7 +38,7 @@ def edit_fruit(request, pk):
     f = Fruit.objects.get(id=pk)
     form = FruitForm(instance=f)
     if request.method == "POST":
-        form = FruitForm(request.POST,instance=f)
+        form = FruitForm(request.POST,request.FILES,instance=f)
         if form.is_valid():
             form.save()
             return redirect('list_fruit')
@@ -57,7 +57,7 @@ def delete_fruit(request, pk):
 @login_required
 def add_option(request):
     if request.method == 'POST':
-        form = OptionForm(request.POST)
+        form = OptionForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
             return redirect('list_option')
@@ -73,7 +73,7 @@ def edit_option(request, pk):
     o = Option.objects.get(id=pk)
     form = OptionForm(instance=o)
     if request.method == "POST":
-        form = OptionForm(request.POST,instance=o)
+        form = OptionForm(request.POST,request.FILES,instance=o)
         if form.is_valid():
             form.save()
             return redirect('list_option')
@@ -108,7 +108,7 @@ def edit_drink(request, pk):
     d = Drink_info.objects.get(id=pk)
     form = DrinkForm(instance=d)
     if request.method == "POST":
-        form = DrinkForm(request.POST,instance=d)
+        form = DrinkForm(request.POST,request.FILES,instance=d)
         if form.is_valid():
             form.save()
             return redirect('list_drink')

@@ -49,6 +49,7 @@ class CustomerForm(forms.ModelForm):
 
 
 class FruitForm(forms.ModelForm):
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control-file col-5'}),required=False)
     fruit_name = forms.CharField(
         max_length=30,
         widget=forms.TextInput(attrs={ 'class' : 'form-control col-5',
@@ -65,10 +66,11 @@ class FruitForm(forms.ModelForm):
         )
     class Meta:
         model = Fruit
-        fields = ('fruit_name', 'fruit_desc')
+        fields = ('picture','fruit_name', 'fruit_desc')
 
 
 class OptionForm(forms.ModelForm):
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control-file col-5'}),required=False)
     option_name = forms.CharField(
         max_length=30,
         widget=forms.TextInput(attrs={ 'class' : 'form-control col-5', 'placeholder' : 'ชื่อของ topping' }),
@@ -83,7 +85,7 @@ class OptionForm(forms.ModelForm):
         label='Topping price:')
     class Meta:
         model = Option
-        fields = ('option_name', 'description','price')
+        fields = ('picture','option_name', 'description','price')
 
 class DrinkForm(forms.ModelForm):
     picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control-file col-5'}),required=False)
