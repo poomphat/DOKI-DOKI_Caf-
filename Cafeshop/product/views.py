@@ -132,8 +132,10 @@ def delete_WARRING_PLZ_DONT_USE_THIS(request):
 
 def queue(request):
     orders = Order.objects.all()
+    queue = []
     for order in orders:
         order_lists = Order_list.objects.filter(order_id=order.id)
+        item = {}
         for order_list in order_lists:
             item = {
                 'id':order_list.d_id,
@@ -177,8 +179,17 @@ def queue(request):
                         'amount':juicefruit.amount
                     })
                 item['fruit'] = fruit_items
-
+        order_list = {
+            'id':order.id,
+            'date':order.date,
+            'promo_id':order.promo_id,
+            'finish':order.finish_flag,
+            'item':item,
+            'total_price':order.total_price
+        }
+        queue.append(order_list)
+    print(queue)
     context = {
-        'queues':''
+        'queues':queue
     }
-    return render(request,'product/queue.html', context={})
+    return render(request,'product/queue.html', context=context)
