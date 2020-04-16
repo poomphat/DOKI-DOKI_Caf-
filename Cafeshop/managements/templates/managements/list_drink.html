@@ -20,9 +20,9 @@
                 <table class="table tablebo">
                     {% for di in drink_info%}
                     <tr><td><div class="row ">
-                        <div class="titledrink col-3"></div>
+                        <div class="titledrink col-3" style="background-image: url('..{{ di.picture.url }}');"></div>
                                 <div class="col-8">
-                                    <p style="font-weight: bold; background-image: url('media/{{ di.picture.url }}');">{{ forloop.counter }}). {{di.d_name}}</p>
+                                    <p style="font-weight: bold;">{{ forloop.counter }}). {{di.d_name}}</p>
                                     <p class="text-primary">ชนิดเครื่องดืม : {{di.drink_type}}</p>
                                     <p class="text-primary">ราคา : {{di.cost}}</p>
                                     <a href="{% url 'edit_drink' di.id %}" class="btn btn-warning text-white"> Edit </a>
