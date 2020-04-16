@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% load static %}
 <div class="container listall">
     <div class="list col-12" style="margin-bottom: 5vh; margin-top: 1vh;">
         <form class="form-inline" method="GET" action="{% url 'list_option'%}">
@@ -11,27 +11,19 @@
         <a class="btn bottoncolor78 col-lg-2 col-4" href="{% url 'add_fruit' %}"
             style="margin-right: 0px;">เพิ่มผลไม้</a>
         <div class="alltable">
-            <div class="listhead">
-                <table class="table  table-striped table-bordered table-light">
-                    <thead class="thead-custom">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">ชื่อผลไม้</th>
-                            <th scope="col">คำอธิบาย</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
             <div class="listbody">
                 <table class="table tablebo">
-                    {% for di in fruit%}
-                    <tr>
-                        <td scope="row">{{ forloop.counter }}</td>
-                        <td>{{di.fruit_name}}</td>
-                        <td>{{di.fruit_desc}}</td>
-                        <td><a href="{% url "edit_fruit" di.id %}" class="btn btn-warning text-white"> Edit </a><td>
-                        <td><a class="btn btn-danger text-white"> Delete </a></td>
+                    {% for di in fruit %}
+                   <tr><td><div class="row ">
+                        <div class="titledrink col-3"></div>
+                                <div class="col-8">
+                                    <p style="font-weight: bold;">{{ forloop.counter }}). ชื่อ : {{di.fruit_name}}</p>
+                                    <p class="text-primary">คำอธิบาย : {{di.fruit_desc}}</p>
+                                    <a href="{% url 'edit_fruit' di.id %}" class="btn btn-warning text-white"> Edit </a>
+                                    <a href="{% url 'delete_fruit' di.id %}" class="btn btn-danger text-white"> Delete </a>
+                                </div>
+                        </div>  
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -40,6 +32,18 @@
     </div>
 </div>
 <style>
+   .titledrink{
+        width: 100px;
+        height: 150px;
+        background-color: #ddd;
+        text-align: center;
+        line-height: 150px;
+        border-radius: 20px;
+        background-image: url("{% static 'staw.jpg'%}");
+    }
+    p{
+        font-size: 20px;
+    }
     th,
     td {
         width: 20%;
@@ -72,13 +76,13 @@
     }
 
     .listbody {
-        height: 45vh;
+        height: 50vh;
 
     }
 
     .alltable {
         width: 100%;
-        overflow: scroll;
+        overflow-x: hidden;
     }
 
     @media only screen and (max-width: 500px) {
@@ -97,7 +101,9 @@
         .table {
             width: 400px;
         }
-
+        p{
+            font-size: 14px;
+        }
         th,
         td {
             width: 20%;

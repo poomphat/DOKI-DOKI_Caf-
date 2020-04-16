@@ -33,7 +33,6 @@ def add_fruit(request):
         'form': form
     })
 
-
 @login_required
 def edit_fruit(request, pk):
     f = Fruit.objects.get(id=pk)
@@ -50,12 +49,18 @@ def edit_fruit(request, pk):
     return render(request, 'managements/add_fruit.html', context) 
 
 @login_required
+def delete_fruit(request, pk):
+    f = Fruit.objects.get(id=pk)
+    f.delete()
+    return  redirect('list_fruit')
+
+@login_required
 def add_option(request):
     if request.method == 'POST':
         form = OptionForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('index')
+            return redirect('list_option')
     else:
         form = OptionForm()
     
@@ -76,15 +81,21 @@ def edit_option(request, pk):
         'form': form,
         'o':o,
     }
-    return render(request, 'managements/add_option.html', context) 
+    return render(request, 'managements/add_option.html', context)
+
+@login_required
+def delete_option(request, pk):
+    o = Option.objects.get(id=pk)
+    o.delete()
+    return redirect('list_option')
 
 @login_required
 def add_drink(request):
     if request.method == 'POST':
-        form = DrinkForm(request.POST)
+        form = DrinkForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('index')
+            return redirect('list_drink')
     else:
         form = DrinkForm()
     
@@ -106,6 +117,12 @@ def edit_drink(request, pk):
         'd':d,
     }
     return render(request, 'managements/add_drink.html', context) 
+
+@login_required
+def delete_drink(request, pk):
+    d = Drink_info.objects.get(id=pk)
+    d.delete()
+    return redirect('list_drink')
 
 @login_required
 def list_drink(request):

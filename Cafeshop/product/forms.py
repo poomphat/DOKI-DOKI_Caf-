@@ -86,6 +86,7 @@ class OptionForm(forms.ModelForm):
         fields = ('option_name', 'description','price')
 
 class DrinkForm(forms.ModelForm):
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control-file col-5'}),required=False)
     d_name = forms.CharField(
         max_length=100,
         widget=forms.TextInput(attrs={ 'class' : 'form-control col-5', 'placeholder' : 'ชื่อของเครื่องดื่ม' }),
@@ -102,7 +103,7 @@ class DrinkForm(forms.ModelForm):
                     widget=forms.Select(attrs={'class' : 'form-control col-12'}))       
     class Meta:
         model = Drink_info
-        fields = ('d_name', 'd_desc', 'drink_type', 'cost') 
+        fields = ('picture','d_name', 'd_desc', 'drink_type', 'cost') 
 
 class PromotionForm(forms.ModelForm):
     s_date =  forms.DateTimeField(widget=forms.DateTimeInput(

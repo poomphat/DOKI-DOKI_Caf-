@@ -16,10 +16,6 @@ class Promotion(models.Model):
 class Staff(models.Model):
     st_name = models.CharField(max_length=255)
 
-class Queue_info(models.Model):
-    date_time = models.DateTimeField(auto_now=True)
-
-
 class Order(models.Model):
     
     TYPE_BUY = (
@@ -32,7 +28,6 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now=True)
     promo_id = models.ForeignKey(Promotion, on_delete=models.CASCADE)
     c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    queue = models.ForeignKey(Queue_info, on_delete=models.CASCADE)
     finish_flag = models.BooleanField(default=False)
 
 class Drink_info(models.Model):
@@ -42,7 +37,7 @@ class Drink_info(models.Model):
         ('Iced', 'Iced'),
         ('Frappe', 'Frappe')
     )
-    
+    picture = models.ImageField(default='product/default.png',upload_to='product/',null=True,blank=True)
     d_name = models.CharField(max_length=255)
     d_desc = models.CharField(max_length=255, default="")
     cost = models.IntegerField()

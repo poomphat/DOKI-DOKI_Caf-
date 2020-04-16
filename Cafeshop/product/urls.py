@@ -23,4 +23,5 @@ urlpatterns = [
     path('logout/', views.mylogout, name='logout'),
     path('register/', views.register, name='register'),
     path('api/', views.api, name='api'),
+    path('queue/', views.queue, name='queue')
 ]

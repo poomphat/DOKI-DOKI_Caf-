@@ -1,39 +1,35 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block content %} {% load static %}
 <div class="container listall">
     <div class="list col-12" style="margin-bottom: 5vh; margin-top: 1vh;">
         <form class="form-inline" method="GET" action="{% url 'list_option'%}">
             <input type="text" class="form-control col-lg-8 col-6" id="search" name="search" placeholder="ค้นหา">
-            <button class="btn bottoncolor78 col-4 col-lg-2" type="submit" style="margin-right:0px;">ค้นหา</button>
+            <button class="btn bottoncolor78 col-4 col-lg-2" type="submit">
+            <svg>
+            <img style="height:25px;" src="/static/search-solid.svg">
+            </svg>
+            </button>
         </form>
     </div>
     <div class="col-12 list_r">
-        <label class="titlelist col-lg-8 col-6">List Fruit</label>
-        <a class="btn bottoncolor78 col-lg-2 col-4" href="{% url 'add_drink' %}"
-            style="margin-right: 0px;">เพิ่มเครื่องดื่ม</a>
+        <label class="titlelist col-lg-8 col-6">List Drink</label>
+        <a class="btn bottoncolor78 col-lg-2 col-4" href="{% url 'add_drink' %}">
+            <img class="icon" style="height: 25px;" src="/static/plus-solid.svg">
+            </a>
         <div class="alltable">
-            <div class="listhead">
-                <table class="table  table-striped table-bordered table-light">
-                    <thead class="thead-custom">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">ชื่อเครื่องดื่ม</th>
-                            <th scope="col">ชนิอเครื่องดืม</th>
-                            <th scope="col">ราคา</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
             <div class="listbody">
                 <table class="table tablebo">
                     {% for di in drink_info%}
-                    <tr>
-                        <td scope="row">{{ forloop.counter }}</td>
-                        <td>{{di.d_name}}</td>
-                        <td>{{di.drink_type}}</td>
-                        <td>{{di.cost}}</td>
-                        <td><a href="{% url "edit_drink" di.id %}" class="btn btn-warning text-white"> Edit </a><td>
-                        <td><a class="btn btn-danger text-white"> Delete </a></td>
+                    <tr><td><div class="row ">
+                        <div class="titledrink col-3"></div>
+                                <div class="col-8">
+                                    <p style="font-weight: bold; background-image: url('media/{{ di.picture.url }}');">{{ forloop.counter }}). {{di.d_name}}</p>
+                                    <p class="text-primary">ชนิดเครื่องดืม : {{di.drink_type}}</p>
+                                    <p class="text-primary">ราคา : {{di.cost}}</p>
+                                    <a href="{% url 'edit_drink' di.id %}" class="btn btn-warning text-white"> Edit </a>
+                                    <a href="{% url 'delete_drink' di.id %}" class="btn btn-danger text-white"> Delete </a>
+                                </div>
+                        </div>  
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -42,6 +38,21 @@
     </div>
 </div>
 <style>
+
+    .titledrink{
+        width: 100px;
+        height: 150px;
+        background-color: #ddd;
+        text-align: center;
+        line-height: 150px;
+        border-radius: 20px;
+        background-size: cover;
+        transition: 0.15s ease;
+        background-position: center;
+    }
+    p{
+        font-size: 20px;
+    }
     th,
     td {
         width: 20%;
@@ -74,13 +85,13 @@
     }
 
     .listbody {
-        height: 45vh;
+        height: 50vh;
 
     }
 
     .alltable {
         width: 100%;
-        overflow: scroll;
+        overflow-x: hidden;
     }
 
     @media only screen and (max-width: 500px) {
@@ -99,7 +110,9 @@
         .table {
             width: 400px;
         }
-    
+        p{
+            font-size: 14px;
+        }
         th,
         td {
             width: 20%;

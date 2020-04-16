@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Queue_info,Coffee_and_other_option
+from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option
 from product.forms import UserForm,CustomerForm
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
@@ -83,9 +83,6 @@ def api(request):
     order.c_id = Customer.objects.get(pk=request.user.id)
     order.total_price = order_data['total_price']
     order.promo_id = Promotion.objects.get(pk=1)
-    q = Queue_info()
-    q.save()
-    order.queue = q
     order.save()
     for item in order_data['cart']:
         order_list = Order_list()
@@ -126,3 +123,62 @@ def api(request):
                 co.save()
         #order.save()
     return JsonResponse(order_data, status=200)
+
+def delete_WARRING_PLZ_DONT_USE_THIS(request):
+    a = Special.objects.all()
+    for x in a:
+        x.delete()
+    return render(request,'product/queue.html', context={})
+
+def queue(request):
+    orders = Order.objects.all()
+    for order in orders:
+        order_lists = Order_list.objects.filter(order_id=order.id)
+        for order_list in order_lists:
+            item = {
+                'id':order_list.d_id,
+                'order_id':order_list.order_id,
+                'unit_price':order_list.unit_price,
+                'sweetness':'',
+                'fruit':'',
+                'topping':'',
+                'amount':order_list.amount,
+            }
+            special = Special.objects.get(pk=order_list.special_id_id)
+            if special.special_type == 'Coffee':
+                coffee = Coffee.objects.get(pk=special.id)
+                item['sweetness'] = coffee.sweetness
+                co = coffee.option.all()
+                topping_items = []
+                for topping in co:
+                    option = Option.objects.get(pk=topping.option_id)
+                    topping_items.append({
+                        'name':option.name,
+                        'amount':topping.amount
+                    })
+                item['topping'] = topping_items
+            elif special.special_type == 'Juice':
+                juice = Juice.objects.get(pk=special.id)
+                jo = juice.option.all()
+                topping_items = []
+                for topping in jo:
+                    option = Option.objects.get(pk=topping.option_id)
+                    topping_items.append({
+                        'name':option.name,
+                        'amount':topping.amount
+                    })
+                item['topping'] = topping_items
+                jf = juice.fruit.all()
+                fruit_items = []
+                for juicefruit in jf:
+                    fruit = Option.objects.get(pk=juicefruit.option_id)
+                    fruit_items.append({
+                        'name':fruit.name,
+                        'amount':juicefruit.amount
+                    })
+                item['fruit'] = fruit_items
+
+    context = {
+        'queues':''
+    }
+    return render(request,'product/queue.html', context={})

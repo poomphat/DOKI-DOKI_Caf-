@@ -1,27 +1,19 @@
-{% extends "base.html" %} {% block content %}  {% load static %}
+{% extends "base.html" %} {% load static %} {% block content %}
 <div class="container listall">
-    <div class="list col-12" style="margin-bottom: 5vh; margin-top: 1vh;">
-        <form class="form-inline" method="GET" action="{% url 'list_option'%}">
-            <input type="text" class="form-control col-lg-8 col-6" id="search" name="search" placeholder="ค้นหา">
-            <button class="btn bottoncolor78 col-4 col-lg-2" type="submit" style="margin-right:0px;">ค้นหา</button>
-        </form>
-    </div>
     <div class="col-12 list_r">
-        <label class="titlelist col-lg-8 col-6">List Topping</label>
-        <a class="btn bottoncolor78 col-lg-2 col-4" href="{% url 'add_option' %}" style="margin-right: 0px;">เพิ่ม
-            Topping</a>
+        <label class="titlelist col-lg-8 col-6">รายการคิว</label>
         <div class="alltable">
             <div class="listbody">
                 <table class="table tablebo">
-                    {% for di in option%}
+                    {% for queue in queues %}
                     <tr><td><div class="row ">
-                        <div class="titledrink col-3"></div>
+                        <div class="titledrink col-3">{{ forloop.counter }}</div>
                                 <div class="col-8">
-                                    <p style="font-weight: bold;">{{ forloop.counter }}). ชื่อ : {{di.option_name}}</p>
-                                    <p class="text-primary">คำอธิบาย : {{di.description}}</p>
-                                    <p class="text-primary">ราคา : {{di.price}}</p>
-                                    <a href="{% url 'edit_option' di.id %}" class="btn btn-warning text-white"> Edit </a>
-                                    <a href="{% url 'delete_option' di.id %}" class="btn btn-danger text-white"> Delete </a>
+                                    <p>ชื่อ : {{di.d_name}}</p>
+                                    <p class="text-primary">ชนิดเครื่องดืม : {{di.drink_type}}</p>
+                                    <p class="text-primary">ราคา : {{di.cost}}</p>
+                                    <a href="{% url 'edit_drink' di.id %}" class="btn btn-warning text-white"> Edit </a>
+                                    <a href="{% url 'delete_drink' di.id %}" class="btn btn-danger text-white"> Delete </a>
                                 </div>
                         </div>  
                         </td>
@@ -40,12 +32,7 @@
         text-align: center;
         line-height: 150px;
         border-radius: 20px;
-        background-image: url("{% static 'kaimook.jpg'%}");
-        background-size: cover;
-        transition: 0.15s ease;
-        background-position: center;
     }
-
     p{
         font-size: 20px;
     }
@@ -149,5 +136,4 @@
         margin-top: 10vh;
     }
 </style>
-
 {% endblock content %}

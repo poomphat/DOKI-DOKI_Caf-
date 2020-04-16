@@ -106,7 +106,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
-                        <h2 style="margin-top: 1vh;">เลือกผลไม้ (เลือกได้มากกว่า1อย่าง) </h2>
+                        <h2 style="margin-top: 1vh;">เลือกผลไม้ (เลือกได้มากกว่า 1 อย่าง) </h2>
                         <hr>
                     </div>
                 </div>
@@ -164,7 +164,10 @@
             <div class="col-12">
                 <h3 class='pt-1' style='width:50vw;'>เลือกโปรโมชั่น : </h3>
                 <select name="promotion" id="promotion" class='custom-select' style='width:50%;'>
-                    <option value="0">ไม่เลือก</option>
+                <option value="0"> ไม่เลือก </option>
+                {% for di in Promotion %}
+                    <option value="0"> {{di.promo_desc}}</option>
+                {% endfor %}
                 </select>
             </div>
         </div>
