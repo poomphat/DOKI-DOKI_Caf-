@@ -493,7 +493,7 @@ function addToCart() {
 function clearallcoffee() {
     var O = document.querySelectorAll('.menu');
     for (var i = 0; i < O.length; i++) {
-        O[i].style.border = "1px solid black";
+        O[i].style.border = "0px solid black";
         O[i].style.color = "black";
     }
 }
@@ -658,7 +658,7 @@ function selectFruitThis(event) {
 
     } else {
         fruit = fruit.filter(f => f.id !== target.dataset.id)
-        event.target.style.border = "1px solid black";
+        event.target.style.border = "0px solid black";
         event.target.style.color = "black";
     }
     if (fruit.length == 0){

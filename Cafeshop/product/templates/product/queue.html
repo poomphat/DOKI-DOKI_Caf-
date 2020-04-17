@@ -7,12 +7,16 @@
             <div class="listbody">
                 {% for queue in queues %}
                 <div class="row">
-                    <div class="titledrink col-3" data-toggle="collapse" href="#collapse{{ forloop.counter }}"
+                    <div class="titledrink col-3  {% if queue.your %} bghl {% endif %}" data-toggle="collapse" href="#collapse{{ forloop.counter }}"
                         role="button" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                         <p font-size="28px">{{ forloop.counter }}</p>
                     </div>
                     <div class="col-8">
-                        <p class="text-primary">หมายเลขออเดอร์ : {{queue.id}}</p>
+                        <p class="text-primary">หมายเลขออเดอร์ : {{queue.id}}
+                            {% if queue.your %} 
+                            <span class='text-warning'>(ออเดอร์ของคุณ)</span>
+                            {% endif %}
+                        </p>
                         <p class="text-secondary">วันที่ : {{queue.date.date}}</p>
                         <p class="text-secondary">เวลา : {{queue.time}}น.</p>
                         <p class="text-success">ราคารวม : {{queue.total_price}}</p>
@@ -136,7 +140,9 @@
         width: 100%;
         overflow-x: hidden;
     }
-
+    .bghl{
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+    }
      @media only screen and (max-width: 1400px) {
          .titledrink {
             margin-left: 3vw;

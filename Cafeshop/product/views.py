@@ -77,9 +77,9 @@ def register(request):
 def api(request):
     data = json.loads(request.body)
     order_data = data['order']
-    print(Customer.objects.get(pk=request.user.id).id)
     order = Order()
-    order.c_id = Customer.objects.get(pk=request.user.id)
+    print(request.user.id)
+    order.c_id = Customer.objects.get(user__id=request.user.id)#instance
     order.total_price = order_data['total_price']
     order.promo_id = Promotion.objects.get(pk=1)
     order.save()
@@ -181,7 +181,6 @@ def queue(request):
                 fruits = juice.fruits.all()
                 fruit_items = []
                 for fruit in fruits:
-                    print(fruit)
                     jf = Juice_fruit.objects.get(juice=juice, fruit=fruit)
                     fruit_items.append({
                         'name':fruit.fruit_name,
@@ -189,7 +188,6 @@ def queue(request):
                     })
                 item['fruits'] = fruit_items
             item_list.append(item)
-        print(order.date)
         order_list = {
             'id':order.id,
             'date':order.date,
@@ -197,9 +195,17 @@ def queue(request):
             'finish':order.finish_flag,
             'items':item_list,
             'time':order.date.strftime('%H:%M'),
-            'total_price':order.total_price
+            'total_price':order.total_price,
+            'your':False,
+            'customer_name':order.c_id.user.first_name,
+            
         }
+        if Customer.objects.get(user__id=request.user.id).id == order.c_id.id:
+            order_list['your'] = True
         queue.append(order_list)
+        print(order_list['your'])
+        print(request.user.id)
+        print(order.c_id.id)
     context = {
         'queues':queue
     }
