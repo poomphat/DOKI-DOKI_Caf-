@@ -1,0 +1,217 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<div class="container listall">
+    <div class="col-12 list_r">
+        <div class="row">
+        <div class="col-12">
+            <label class="titlelist col-lg-8 col-6">ยอดขาย</label></div>
+                <div class="col-3">
+                    <a href="{% url 'report' 'day' %}"><button type='button' class='btn btn-primary btncool col'>รายวัน</button></a>
+                </div>
+                <div class="col-3">
+                    <a href="{% url 'report' 'week' %}"><button type='button' class='btn btn-primary btncool col'>รายสัปดาห์</button></a>
+                </div>
+                <div class="col-3">
+                    <a href="{% url 'report' 'month' %}"><button type='button' class='btn btn-primary btncool col'>รายเดือน</button></a>
+                </div>
+                <div class="col-3">
+                    <a href="{% url 'report' 'year' %}"><button type='button' class='btn btn-primary btncool col'>รายปี</button></a>
+                </div>
+        </div>
+        <hr>
+        <div class="alltable">
+            <div class="listbody">
+                <table class='table' id='myTable'>
+                    <thead class="thead-custom">
+                        <tr>
+                            <th>{{type}}</th>
+                            <th>จำนวนออเดอร์</th>
+                            <th>ยอดขายรวมทั้งหมด</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td data-order='{{ forloop.counter }}'>
+                                    {% if type == 'year' %}
+                                        {{order.time.year}}
+                                    {% elif type == 'month' %}
+                                        {{order.time.month}}/{{order.time.year}}
+                                    {% elif type == 'day' %}
+                                        {{order.time.date}}
+                                    {% elif type == 'week' %}
+                                        {{order.week}}/{{order.time.year}}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ order.count}}
+                                </td>
+                                <td>
+                                    {{ order.total_income}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+</script>
+<style>
+    .btncool{
+        margin-right: 1vw;
+        margin-bottom: 1vw;
+        font-size: 18px;
+    }
+    .titledrink {
+        width: 100px;
+        height: 220px;
+        background-color: #ddd;
+        text-align: center;
+        line-height: 220px;
+        border-radius: 20px;
+        margin-left: 1vw;
+         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+    
+
+    p {
+        font-size: 20px;
+    }
+
+    th,
+    td {
+        width: 20%;
+    }
+
+    .thead-custom {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+        background-attachment: fixed;
+    }
+
+    .table-bordered>tbody>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered {
+        border: 1px solid transparent;
+        margin-top: 20px;
+    }
+
+    .queue_item {
+        background-position: center;
+        background-size: cover;
+    }
+
+    table.table-bordered>thead>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered>tbody>tr>td {
+        border: 1px solid transparent;
+    }
+
+    table {
+        font-size: 18px;
+    }
+
+    .listbody {
+        height: 70vh;
+
+    }
+
+    .alltable {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+     @media only screen and (max-width: 800px) {
+         .btncool{
+             font-size: 14px;
+         }
+     }
+     @media only screen and (max-width: 500px) {
+         .btncool{
+             font-size: 10px;
+         }
+     }
+    @media only screen and (max-width: 500px) {
+
+        .table,
+        .list_r label,
+        .list_r a,
+        .list button {
+            font-size: 14px;
+        }
+        .titledrink {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+        }
+    
+
+        .list_r label {
+            font-size: 18px;
+        }
+
+        .table {
+            width: 400px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            width: 20%;
+        }
+
+        .titledrink {
+            margin-left: 5vw;
+        }
+    }
+
+    .list {
+        background-color: rgba(253, 253, 253, 0.9);
+        padding: 2%;
+        border-radius: 10px;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+    }
+
+    .list_r {
+        background-color: rgba(253, 253, 253, 0.9);
+        padding: 3%;
+        border-radius: 10px;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        margin-bottom: 5vh;
+    }
+
+    .bottoncolor78 {
+        text-align: center;
+        color: rgb(82, 82, 82);
+        font-size: 24px;
+        border-radius: 20px;
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+        transition: 0.25s ease;
+        margin-top: 0.5vh;
+        margin-bottom: 0.5vh;
+        margin-left: 10%;
+    }
+
+    .titlelist {
+        font-size: 30px;
+    }
+
+    .listall {
+        margin-top: 10vh;
+    }
+</style>
+{% endblock content %}

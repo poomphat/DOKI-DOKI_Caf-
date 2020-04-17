@@ -23,5 +23,7 @@ urlpatterns = [
     path('logout/', views.mylogout, name='logout'),
     path('register/', views.register, name='register'),
     path('api/', views.api, name='api'),
-    path('queue/', views.queue, name='queue')
+    path('api_drink/', views.api_drink, name='api_drink'),
+    path('queue/', views.queue, name='queue'),
+    path('order_success/<int:id>/', views.order_success, name='order_success'),
 ]

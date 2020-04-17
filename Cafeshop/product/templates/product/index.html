@@ -111,10 +111,14 @@
                 </div>
                 <div class="row" id='fruitZone'>
                     {% for fruit in fruits %}
-                    <div class="col-sm-3">
-                        <button class="btncool smoot" style='height:100px;width:100%;border:none;display:inline-block; margin-top: 1vh; background-image: url("../managements{{fruit.picture.url}}");' class="btncool"
-                            name="{{ fruit.fruit_name }}" onclick='selectFruitThis(event);recalDrinkPrice(event);'
-                            data-id="{{ fruit.id }}"> </button>  <p style='position: absolute;top: 40%;left: 40%;font-size: 20px;'>{{ fruit.fruit_name }}</p>
+                    <div class="col-12 col-md-6 col-lg-3">
+                    <div class="menu" onclick='selectFruitThis(event);recalDrinkPrice(event);'>
+                        <button class="btncool smoot col" style='pointer-events: none;margin-top: 1vh; background-image: url("../managements{{fruit.picture.url}}");' class="btncool"
+                            name="{{ fruit.fruit_name }}" > 
+                        </button> 
+                        <hr style='pointer-events: none'> 
+                        <p class="text-center" data-id="{{ fruit.id }}" data-name='{{ fruit.fruit_name }}'style='pointer-events: none;position: relative;font-size: 20px;'>{{ fruit.fruit_name }}</p>
+                    </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -287,20 +291,34 @@
         overflow-x: hidden;
         z-index: 1000;
     }
+    .menu{
+        border-radius: 10px;
+        transition: 0.25s ease;
+        background-color: #E2E2E2;
+        margin-bottom: 1vh;
+        padding-bottom: 1vh;
+    }
+    .menu:hover{
+        background-color: #6decb9;
+
+    }
     .table-bordered>tbody>tr>th {
         border: 1px solid transparent;
     }
     .smoot{
+        width:80%;
+        margin-top: 1vh;
+        margin-bottom: 1vh;
+        margin-left: 10%;
         background-size: cover;
-        background-attachment: center;
+        background-position: center;
         border-radius: 20px; 
         font-size: 20px;
         filter: opacity(1);
     }
     .smoot:focus { outline: none; }                     
     .smoot:hover{
-        transition:0.3s;
-        filter: opacity(0.3);
+        transition:0.3s; 
     }
     table.table-bordered { 
         border: 1px solid transparent;
@@ -314,6 +332,7 @@
     table.table-bordered>tbody>tr>td { 
         border: 1px solid transparent;
     }
+
     table {
         border-collapse: separate;
         border-spacing: 0 1vh;
@@ -377,13 +396,13 @@
             var x = document.getElementsByClassName(type);
             x[0].className = 'btn btn-primary ' + type;
             menu = document.createElement('div');
-            menu.className = 'col-sm-3 menu';
+            menu.className = 'col-12 col-md-5 col-lg-3 menii';
             menu.innerHTML =
-                "<button class='btncool smoot' style='background-image: url(\"../managements{{ drink.picture.url }}\");' onclick='selectThis(event)'>" +
-                "</button><p style='position: absolute;top: 40%;left: 40%;font-size: 20px;'>{{ drink.d_name }}</p>" + 
+                "<div class=\"menu\" onclick='selectThis(event)'><button class='btncool smoot' style='pointer-events: none;background-image: url(\"../managements{{ drink.picture.url }}\");'>" +
+                "</button><hr style='pointer-events: none;'><p style='pointer-events: none;position:relative; auto;font-size: 20px;' class='text-center'>{{ drink.d_name }}</p>" + 
                 "<p style='display:none' id='drink_id'>{{ drink.id }}</p>" +
                 "<p style='display:none' id='type'>{{ drink.drink_type }}</p>" +
-                "<p style='display:none' id='cost'>{{ drink.cost }}</p>"
+                "<p style='display:none' id='cost'>{{ drink.cost }}</p></div>"
             menuZone.appendChild(menu)
         }
         {% endfor %}
@@ -416,7 +435,7 @@ function openorder() {
 }
 
 function deleteMenu() {
-    document.querySelectorAll('.menu').forEach(el => el.remove());
+    document.querySelectorAll('.menii').forEach(el => el.remove());
 }
 
 function deleteAllTopping() {
@@ -464,13 +483,15 @@ function addToCart() {
         document.getElementById('ordered').style.display = '';
         document.getElementById('unordered').style.display = 'none';
     } else {
+        if(drink_kind == 'coffee'){
         document.getElementById('nonDrinkAddtoCard').style.display = 'inline';
+        }
     }
 
 }
 
 function clearallcoffee() {
-    var O = document.querySelectorAll('.btncool');
+    var O = document.querySelectorAll('.menu');
     for (var i = 0; i < O.length; i++) {
         O[i].style.border = "1px solid black";
         O[i].style.color = "black";
@@ -478,8 +499,8 @@ function clearallcoffee() {
 }
 
 function selectThis(event) {
-    target = event.target.parentNode
-    target = target.firstElementChild.nextElementSibling
+    target = event.target
+    target = target.firstElementChild.nextElementSibling.nextElementSibling
     drink_name = target.innerText
     target = target.nextElementSibling
     drink_id = Number(target.innerText)
@@ -493,7 +514,7 @@ function selectThis(event) {
     sweetness = sweet_select.options[sweet_select.selectedIndex].value
     changeDrinkPrice(drink_price)
     clearallcoffee()
-    event.target.style.border  = "5px solid #44D362";
+    event.target.style.border  = "10px solid #44D362";
     event.target.style.color = "white";
 }
 
@@ -560,6 +581,7 @@ function cartList() {
             hr = document.createElement('hr')
             td.appendChild(hr)
             ul = document.createElement('ul')
+            console.log(cart[i].fruit)
             for (var j = 0; j < cart[i].fruit.length; j++) {
                 li = document.createElement('li')
                 li.innerHTML = cart[i].fruit[j].name
@@ -600,6 +622,7 @@ function cartList() {
         tr.appendChild(td)
         tablecart.appendChild(tr)
         calCartPrize()
+        reset()
 
     }
 
@@ -620,28 +643,25 @@ function checkMT5(event) {
 
 function selectFruitThis(event) {
 
-    target = event.target
+    target = event.target.firstElementChild.nextElementSibling.nextElementSibling
     drink_name = 'Juice'
-    drink_id = 6
+    drink_id = 1
     drink_kind = 'juice'
     drink_price = 45
     if (!(fruit.some(f => f.id == target.dataset.id))) {
         fruit.push({
-
             id: target.dataset.id,
-            name: target.innerText
-
+            name: target.dataset.name
         })
-        target.style.border  = "5px solid #44D362";
-        target.style.color = "black";
-        target.style.filter = "opacity(0.3)";
+        event.target.style.border  = "10px solid #44D362";
+        event.target.style.color = "black";
 
     } else {
         fruit = fruit.filter(f => f.id !== target.dataset.id)
-        target.style.border = "1px solid black";
-        target.style.color = "black";
-        target.style.filter = "opacity(1)";
+        event.target.style.border = "1px solid black";
+        event.target.style.color = "black";
     }
+    console.log(fruit)
 }
 
 function changeDrinkPrice(price) {

@@ -19,7 +19,7 @@
                         <button type='button' class='btn btn-primary' data-toggle="collapse"
                             href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false"
                             aria-controls="collapse{{ forloop.counter }}">ดูรายละเอียด</button>
-                        <button type='button' class='btn btn-warning'>เสร็จสิ้น</button>
+                        <a href="{% url 'order_success' queue.id %}"><button type='button' class='btn btn-warning'>เสร็จสิ้น</button></a>
                     </div>
                     <div class="collapse mb-3 col-12" id="collapse{{ forloop.counter }}">
                         <hr>
@@ -31,7 +31,7 @@
                                         style="margin-top: 1vh; background-image:url('../managements{{ item.picture.url }}');">
                                     </div>
                                     <div class="col-6">
-                                        <p class="text-primary">{{item.name}}</p>
+                                        <p class="text-primary">{{ forloop.counter }}). {{item.name}}</p>
                                         <p class="text-secondary">ราคารวมท็อปปิ้ง : {{item.unit_price}}</p>
                                         {% if item.sweetness %}
                                         <p class="text-secondary">ความหวาน : {{item.sweetness}}</p>
@@ -78,9 +78,14 @@
         line-height: 220px;
         border-radius: 20px;
         margin-left: 1vw;
-         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     }
-    
+    .card{
+        border-radius: 20px;
+        background: #dddddd;
+        box-shadow: inset 11px 11px 22px #aaaaaa, 
+            inset -11px -11px 22px #ffffff;
+    }
 
     p {
         font-size: 20px;
@@ -123,7 +128,7 @@
     }
 
     .listbody {
-        height: 70vh;
+        height: 68vh;
 
     }
 
@@ -145,6 +150,12 @@
         .list button {
             font-size: 14px;
         }
+        .titledrink {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+        }
+    
 
         .list_r label {
             font-size: 18px;

@@ -11,6 +11,7 @@ class Promotion(models.Model):
     s_date = models.DateField()
     e_date = models.DateField()
     promo_desc = models.TextField()
+    discount = models.IntegerField(default=0)
     promo_status = models.BooleanField(default=True)
  
 class Staff(models.Model):
@@ -27,7 +28,7 @@ class Order(models.Model):
     order_type = models.CharField(max_length=255, choices=TYPE_BUY)
     date = models.DateTimeField(auto_now=True)
     promo_id = models.ForeignKey(Promotion, on_delete=models.CASCADE)
-    c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)    
     finish_flag = models.BooleanField(default=False)
 
 class Drink_info(models.Model):
@@ -42,6 +43,7 @@ class Drink_info(models.Model):
     d_desc = models.CharField(max_length=255, default="")
     cost = models.IntegerField()
     drink_type = models.CharField(max_length=50, choices=DRINK_TYPE)
+    useable_status = models.BooleanField(default=True)
 
 class Special(models.Model):
 
@@ -57,7 +59,7 @@ class Order_list(models.Model):
     unit_price = models.FloatField()
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     d_id = models.ForeignKey(Drink_info, on_delete=models.CASCADE)
-    special_id = models.ForeignKey(Special, on_delete=models.CASCADE)   
+    special_id = models.ForeignKey(Special, on_delete=models.CASCADE)  
     
 
 
@@ -65,12 +67,14 @@ class Fruit(models.Model):
     picture = models.ImageField(default='Fruit/default.png',upload_to='Fruit/',null=True,blank=True)
     fruit_name = models.CharField( max_length=30)
     fruit_desc = models.CharField( max_length=50)
+    useable_status = models.BooleanField(default=True)
 
 class Option(models.Model):
     picture = models.ImageField(default='Option/default.png',upload_to='Option/',null=True,blank=True)
     option_name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     price = models.FloatField()
+    useable_status = models.BooleanField(default=True)
 
 
 class Juice(models.Model):

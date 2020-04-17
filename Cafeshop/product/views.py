@@ -38,7 +38,7 @@ def mylogout(request):
 @login_required
 def index(request):
     promo = Promotion.objects.all()
-    drink_infos = Drink_info.objects.exclude(id=8)
+    drink_infos = Drink_info.objects.exclude(id=1)
     options = Option.objects.all()
     fruits = Fruit.objects.all()
     context = {
@@ -47,7 +47,6 @@ def index(request):
         'fruits' : fruits,
         'Promotion' : promo,
     }
-    print(fruits)
     return render(request, 'product/index.html', context=context)
 
 def register(request):
@@ -132,7 +131,7 @@ def delete_WARRING_PLZ_DONT_USE_THIS(request):
     return render(request,'product/queue.html', context={})
 
 def queue(request):
-    orders = Order.objects.all()
+    orders = Order.objects.filter(finish_flag=False)
     queue = []
     sweetness_name = {
     'normalsweet': 'หวานปกติ',
@@ -190,6 +189,7 @@ def queue(request):
                     })
                 item['fruits'] = fruit_items
             item_list.append(item)
+        print(order.date)
         order_list = {
             'id':order.id,
             'date':order.date,
@@ -204,3 +204,12 @@ def queue(request):
         'queues':queue
     }
     return render(request,'product/queue.html', context=context)
+
+def order_success(request, id):
+    order = Order.objects.get(pk=id)
+    order.finish_flag = True
+    order.save()
+    return redirect('queue')
+
+def api_drink(request):
+    return ""

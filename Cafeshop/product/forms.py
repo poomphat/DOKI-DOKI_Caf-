@@ -116,6 +116,8 @@ class PromotionForm(forms.ModelForm):
         attrs= {'type':'date', 'class' : 'form-control col-12' ,'placeholder' : 'วันที่หมด promotion'})
         ,label='Promotion end:'
     )
+    discount = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'type':'number', 'class' : 'form-control col-12' ,'placeholder' : 'ส่วนลด (หน่วยเป็น %)'}),
+        label='Discount : (หน่วยเป็น %)')
     promo_desc = forms.CharField(
         max_length=255,
         widget=forms.TextInput(attrs={ 'class' : 'form-control col-12' , 'placeholder' : 'คำอธิบาย Promotion' }),
@@ -123,4 +125,4 @@ class PromotionForm(forms.ModelForm):
         )
     class Meta:
         model = Promotion
-        fields = ('s_date','e_date','promo_desc')
+        fields = ('s_date','e_date','discount','promo_desc')
