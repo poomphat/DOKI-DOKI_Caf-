@@ -36,7 +36,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade bd-example-modal-xl-coffee" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+<div class="modal fade bd-example-modal-xl-coffee" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" id='modal-coffee'
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -661,6 +661,9 @@ function selectFruitThis(event) {
         event.target.style.border = "1px solid black";
         event.target.style.color = "black";
     }
+    if (fruit.length == 0){
+        drink_price = 0
+    }
     console.log(fruit)
 }
 
@@ -697,6 +700,9 @@ function order() {
 
 
 }
+$('#modal-coffee').on('hide.bs.modal', function(){
+        reset();
+    })
 </script>
 
 {% endblock content %}
