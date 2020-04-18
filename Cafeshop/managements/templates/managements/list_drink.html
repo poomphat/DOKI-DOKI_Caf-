@@ -129,6 +129,8 @@
         padding: 2%;
         border-radius: 10px;
         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        top: 3vh;
+        opacity: 0;
     }
 
     .list_r {
@@ -137,6 +139,8 @@
         border-radius: 10px;
         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
         margin-bottom: 5vh;
+        top: 3vh;
+        opacity: 0;  
     }
 
     .bottoncolor78 {
@@ -158,5 +162,14 @@
         margin-top: 10vh;
     }
 </style>
-
+<script>
+        $(document).ready(function () {
+                            $(".list_r,.list").animate({
+                                        'top': '0vh',
+                                        'opacity': 1
+                                        },500, function() {
+                                });
+                    
+                });
+        </script>
 {% endblock content %}

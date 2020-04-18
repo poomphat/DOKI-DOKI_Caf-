@@ -192,18 +192,8 @@
         border-radius: 10px;
         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
         margin-bottom: 5vh;
-    }
-
-    .bottoncolor78 {
-        text-align: center;
-        color: rgb(82, 82, 82);
-        font-size: 24px;
-        border-radius: 20px;
-        background: linear-gradient(to right, #ff9966, #ff5e62);
-        transition: 0.25s ease;
-        margin-top: 0.5vh;
-        margin-bottom: 0.5vh;
-        margin-left: 10%;
+        top: 3vh;
+        opacity: 0;
     }
 
     .titlelist {
@@ -214,4 +204,14 @@
         margin-top: 10vh;
     }
 </style>
+    <script>
+        $(document).ready(function () {
+                            $(".list_r").animate({
+                                        'top': '0vh',
+                                        'opacity': 1
+                                        },500, function() {
+                                });
+                    
+                });
+        </script>
 {% endblock content %}

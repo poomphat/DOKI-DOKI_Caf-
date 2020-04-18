@@ -62,14 +62,16 @@
                 <div class="row" id='menuZone'>
                     <div class="col-12">
                         <h2>Menu
-                            <button type='button' class='btn btn-secondary Hot' onclick='addMenu("Hot")'>ร้อน</button>
-                            <button type='button' class='btn btn-secondary Iced' onclick='addMenu("Iced")'>เย็น</button>
-                            <button type='button' class='btn btn-secondary Frappe' onclick='addMenu("Frappe")'>ปั่น</button>
                         </h2>
-                        <h4 class='text-warning' id='nonDrinkAddtoCard' style='display:none;'>
-                        ***** กรุณาเลือกเครื่องดื่ม *****</h4>
+                    
+                    <div class="row">
+                            <div class="col-4"><button type='button' class='btn btn-secondary Hot col' onclick='addMenu("Hot")'>ร้อน</button></div>
+                            <div class="col-4"><button type='button' class='btn btn-secondary Iced col' onclick='addMenu("Iced")'>เย็น</button></div>
+                            <div class="col-4"><button type='button' class='btn btn-secondary Frappe col' onclick='addMenu("Frappe")'>ปั่น</button></div>
+                            <h4 class='text-warning' id='nonDrinkAddtoCard' style='display:none;'>***** กรุณาเลือกเครื่องดื่ม *****</h4>
+                        </div>
                         <hr>
-                    </div>
+                        </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
@@ -394,9 +396,18 @@
     .modal-header {
         background: linear-gradient(to right, #ff9966, #ff5e62);
     }
+    .modal-content {
+        min-height: 80vh;
+        height:auto;
+        border-radius: 0;
+}
     .cad{
         top: 2vw;
         opacity: 0;
+    }
+    .menuZone{
+        visibility: hidden;
+        transition: visibility 1.0s;
     }
 </style>
 <script type="text/javascript">
@@ -439,7 +450,7 @@
                 topping.innerHTML +=
                 "<input type='number' name='amount' class=\'form-control mt-1 ml-3 mr-3\' id='amount' value=\'1\' min=\'1\' max=\'5\' oninput=\'checkMT5(event);recalDrinkPrice(event)\' style=\'width:10vw;display:inline-block\' oninput=\'recalDrinkPrice(event)\'>" +
                 "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);recalDrinkPrice(event);' style=\'display:inline-block\'>-</button>"
-                toppingZone.appendChild(topping)
+                $(topping).appendTo(toppingZone).hide().show('fast');
                 }
             }).catch(function(error) {
                 console.log(error)
@@ -463,9 +474,9 @@
         var a = document.getElementsByClassName("Iced");
         var b = document.getElementsByClassName("Hot");
         var c = document.getElementsByClassName("Frappe");
-        a[0].className = 'btn btn-secondary Iced';
-        b[0].className = 'btn btn-secondary Hot';
-        c[0].className = 'btn btn-secondary Frappe';
+        a[0].className = 'btn btn-secondary Iced col';
+        b[0].className = 'btn btn-secondary Hot col';
+        c[0].className = 'btn btn-secondary Frappe col';
         deleteMenu();
         menuZone = document.getElementById('menuZone')
         //// AJAX call all drink
@@ -476,7 +487,7 @@
                     var drink = data[i]['fields']
                     if (type == drink['drink_type']) {
                         var x = document.getElementsByClassName(type);
-                        x[0].className = 'btn btn-primary ' + type;
+                        x[0].className = 'btn btn-primary col ' + type;
                         menu = document.createElement('div');
                         menu.className = 'col-12 col-md-5 col-lg-3 menii';
                         menu.innerHTML =
@@ -485,7 +496,8 @@
                             "<p style='display:none' id='drink_id'>"+data[i]['pk']+"</p>" +
                             "<p style='display:none' id='type'>"+drink['drink_type']+"</p>" +
                             "<p style='display:none' id='cost'>"+drink['cost']+"</p></div>"
-                        menuZone.appendChild(menu)
+                        $(menu).appendTo('#menuZone').hide().show('normal');
+
                     }
                 }
             }).catch(function(error) {
