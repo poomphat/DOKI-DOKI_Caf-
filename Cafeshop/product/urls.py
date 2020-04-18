@@ -24,6 +24,9 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('api/', views.api, name='api'),
     path('api_drink/', views.api_drink, name='api_drink'),
+    path('api_promotion/', views.api_promotion, name='api_promotion'),
+    path('api_option/', views.api_option, name='api_option'),
     path('queue/', views.queue, name='queue'),
     path('order_success/<int:id>/', views.order_success, name='order_success'),
+    path('account_manage/<int:pk>/', views.account_manage, name='account_manage'),
 ]

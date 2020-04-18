@@ -18,6 +18,8 @@ urlpatterns = [
     path('delete_fruit/<int:pk>/',views.delete_fruit, name='delete_fruit'),
     path('delete_option/<int:pk>/',views.delete_option, name='delete_option'),
     path('delete_drink/<int:pk>/',views.delete_drink, name='delete_drink'),
+    path('delete_pro/<int:pk>/',views.delete_promotion, name='delete_promotion'),
+    path('edit_pro/<int:pk>/',views.edit_promotion, name='edit_promotion'),
 
 ]
 if settings.DEBUG: 

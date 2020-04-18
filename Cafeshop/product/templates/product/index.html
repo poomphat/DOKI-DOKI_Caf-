@@ -3,14 +3,14 @@
     <div class="col-lg-6 col-12 cad" style="margin-top: 6vh;">
         <a data-toggle="modal" data-target=".bd-example-modal-xl-coffee">
             <div class="bg-light cardselect">
-                    <h3 style="margin-top: 6vh; line-height: 200px;">Coffee and Other</h3>
+                    <h3 style="margin-top: 3vh; line-height: 200px;">Coffee and Other</h3>
             </div>
         </a>
     </div>
     <div class="col-lg-6 col-12 beuti cad">
         <a data-toggle="modal" data-target=".bd-example-modal-xl-smoothie">
             <div class="bg-light cardselect">
-                    <h3 style="margin-top: 6vh; line-height: 200px;">Smoothie</h3>
+                    <h3 style="margin-top: 3vh; line-height: 200px;">Smoothie</h3>
             </div>
         </a>
     </div>
@@ -23,9 +23,21 @@
                     <tr><td><div class="row ">
                         <div class="titlepromo col-3">{{ forloop.counter }}</div>
                                 <div class="col-8">
-                                    <h3>Promotion : {{di.promo_desc}}</h3>
-                                    <p class="text-primary">start at :{{di.s_date}}</p>
-                                    <p class="text-danger">end at :{{di.e_date}}</p>
+                                    <h3>Promotion : {{di.name}}</h3>
+                                    <p class="text-success">คำอธิบาย : {{di.promo_desc}}</p>
+                                    <p class="text-primary">start at : {{di.s_date}}</p>
+                                    <p class="text-danger">end at : {{di.e_date}}</p>
+                                    {% if request.user.id == 1%}
+                                    <p>
+                                    <a href="{% url 'edit_promotion' di.id %}" class="btn btn-warning text-white"> 
+                                        <img style="height:20px; filter: invert(1);" src="{% static 'wrench-solid.svg' %}">
+                                    </a>
+                                    <a href="{% url 'delete_promotion' di.id %}" class="btn btn-danger text-white">
+                                        <img style="height:20px; filter: invert(1);" src="{% static 'trash-alt-solid.svg' %}">
+                                    </a>
+
+                                    </p>
+                                    {% endif%}
                                 </div>
                         </div>  
                         </td>
@@ -110,6 +122,7 @@
                     </div>
                 </div>
                 <div class="row" id='fruitZone'>
+                
                     {% for fruit in fruits %}
                     <div class="col-12 col-md-6 col-lg-3">
                     <div class="menu" onclick='selectFruitThis(event);recalDrinkPrice(event);'>
@@ -165,10 +178,10 @@
         <div class="row">
             <div class="col-12">
                 <h3 class='pt-1' style='width:50vw;'>เลือกโปรโมชั่น : </h3>
-                <select name="promotion" id="promotion" class='custom-select' style='width:50%;'>
+                <select name="promotion" id="promotion" class='custom-select' style='width:50%;' onchange='calCartPrize()'>
                 <option value="0"> ไม่เลือก </option>
                 {% for di in Promotion %}
-                    <option value="0"> {{di.promo_desc}}</option>
+                    <option value="{{di.id}}"> {{di.name}}</option>
                 {% endfor %}
                 </select>
             </div>
@@ -251,19 +264,44 @@
     .beuti{
         margin-top: 6vh;
     }
-     @media only screen and (max-width: 990px) {
+    @media only screen and (max-width: 990px) {
 
         .beuti{
             margin-top: 0vh;
         }
+        .titlepromo{
+            height: 150px !important;
+            width: 100px !important;
+            line-height: 150px !important;
+        }
+    }
+    @media only screen and (max-width: 700px) {
+
+        .beuti{
+            margin-top: 0vh;
+        }
+        .titlepromo{
+            height: 100px !important;
+            width: 100px !important;
+            line-height: 100px !important;
+        }
     }
     .titlepromo{
         width: 100px;
-        height: 100px;
-        background-color: #ddd;
+        height: 200px;
         text-align: center;
-        line-height: 100px;
+        line-height: 200px;
         border-radius: 20px;
+        background: linear-gradient(to right, #11998e, #38ef7d);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: 0.15s ease;
+    }
+    .listbody{
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+    .titlepromo:hover{
+        transform: scale(0.95,0.95);
     }
     .list_r {
         background-color: rgba(253, 253, 253, 0.9);
@@ -271,6 +309,8 @@
         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
         margin-bottom: 5vh;
         margin-top: 8vh;
+        top: 2vw;
+        opacity: 0;
     }
     p{
         color: black !important;
@@ -354,8 +394,21 @@
     .modal-header {
         background: linear-gradient(to right, #ff9966, #ff5e62);
     }
+    .cad{
+        top: 2vw;
+        opacity: 0;
+    }
 </style>
 <script type="text/javascript">
+       $(document).ready(function () {
+                    $(".list_r,.cad").animate({
+                                'top': '0vh',
+                                'opacity': 1
+                                },500, function() {
+                                // Animation complete.
+                        });
+            
+        });
         function addTopping(zone) {
         var toppingZone = ''
         if (zone == 1) {
@@ -366,14 +419,23 @@
         topping = document.createElement('div')
         topping.style.margin = '10px'
         topping.className = 'addTopping'
-        topping.innerHTML =
-            "<select class=\'form-control\' id=\'inputGroupSelect01\' style=\'width:15vw;display:inline-block\'>" +
-            {% for option in options %}
-    "<option value='{{option.id}}' data-price='{{option.price}}'>{{option.option_name}}</option>" +
-        {% endfor %}
-    '</select>' +
+        topping.innerHTML = "<select class=\'form-control\' id=\'inputGroupSelect01\' style=\'width:15vw;display:inline-block\'>"
+        var data = axios.get('api_option/', {
+            }).then(function(response) {
+                var data = response['data']
+                for(let i=0 ; i<data.length; i++){
+                    var topping = data[i]['fields']
+                    console.log(topping)
+                    topping.innerHTML += "<option value='"+data[i]['pk']+"' data-price='"+topping['price']+"'>"+topping['option_name']+"</option>"
+                    console.log(topping.innerHTML)
+                }
+            }).catch(function(error) {
+                console.log(error)
+            });
+        console.log(data)
+        topping.innerHTML +=
         "<input type='number' name='amount' class=\'form-control mt-1 ml-3 mr-3\' id='amount' value=\'1\' min=\'1\' max=\'5\' oninput=\'checkMT5(event);recalDrinkPrice(event)\' style=\'width:10vw;display:inline-block\' oninput=\'recalDrinkPrice(event)\'>" +
-        "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);recalDrinkPrice(event);' style=\'display:inline-block\'>-</button>"
+        "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);recalDrinkPrice(event);' style=\'display:inline-block\'>-</button></select>"
     toppingZone.appendChild(topping)
     }
 
@@ -391,21 +453,29 @@
         c[0].className = 'btn btn-secondary Frappe';
         deleteMenu();
         menuZone = document.getElementById('menuZone')
-        {% for drink in drink_infos %}
-        if (type == "{{ drink.drink_type }}") {
-            var x = document.getElementsByClassName(type);
-            x[0].className = 'btn btn-primary ' + type;
-            menu = document.createElement('div');
-            menu.className = 'col-12 col-md-5 col-lg-3 menii';
-            menu.innerHTML =
-                "<div class=\"menu\" onclick='selectThis(event)'><button class='btncool smoot' style='pointer-events: none;background-image: url(\"../managements{{ drink.picture.url }}\");'>" +
-                "</button><hr style='pointer-events: none;'><p style='pointer-events: none;position:relative; auto;font-size: 20px;' class='text-center'>{{ drink.d_name }}</p>" + 
-                "<p style='display:none' id='drink_id'>{{ drink.id }}</p>" +
-                "<p style='display:none' id='type'>{{ drink.drink_type }}</p>" +
-                "<p style='display:none' id='cost'>{{ drink.cost }}</p></div>"
-            menuZone.appendChild(menu)
-        }
-        {% endfor %}
+        //// AJAX call all drink
+        axios.get('api_drink/', {
+            }).then(function(response) {
+                var data = response['data']
+                for(let i=0 ; i<data.length; i++){
+                    var drink = data[i]['fields']
+                    if (type == drink['drink_type']) {
+                        var x = document.getElementsByClassName(type);
+                        x[0].className = 'btn btn-primary ' + type;
+                        menu = document.createElement('div');
+                        menu.className = 'col-12 col-md-5 col-lg-3 menii';
+                        menu.innerHTML =
+                            "<div class=\"menu\" onclick='selectThis(event)'><button class='btncool smoot' style='pointer-events: none;background-image: url(\"../managements/media/"+drink['picture']+"\");'>" +
+                            "</button><hr style='pointer-events: none;'><p style='pointer-events: none;position:relative; auto;font-size: 20px;' class='text-center'>"+drink['d_name']+"</p>" + 
+                            "<p style='display:none' id='drink_id'>"+data[i]['pk']+"</p>" +
+                            "<p style='display:none' id='type'>"+drink['drink_type']+"</p>" +
+                            "<p style='display:none' id='cost'>"+drink['cost']+"</p></div>"
+                        menuZone.appendChild(menu)
+                    }
+                }
+            }).catch(function(error) {
+                console.log(error)
+            });
     }
     var name = ''
 var drink_id = ''
@@ -426,7 +496,7 @@ var fruit = Array()
 function openorder() {
     orderside = document.getElementById('order');
     orderside.style.transition = "ease 0.55s";
-    console.log(orderside.style.right);
+    //console.log(orderside.style.right);
     if (orderside.style.right == '-100%' || orderside.style.right == '') {
         orderside.style.right = "0%";
     } else {
@@ -557,7 +627,11 @@ function changeSweet(event) {
 function cartList() {
     clearCart()
     tablecart = document.getElementById('cart')
+    if (cart.length > 0){
+        openCart()
+    }
     for (var i = 0; i < cart.length; i++) {
+        console.log(i)
         tr = document.createElement('tr')
         tr.className = 'cartItem'
         td = document.createElement('td')
@@ -581,7 +655,6 @@ function cartList() {
             hr = document.createElement('hr')
             td.appendChild(hr)
             ul = document.createElement('ul')
-            console.log(cart[i].fruit)
             for (var j = 0; j < cart[i].fruit.length; j++) {
                 li = document.createElement('li')
                 li.innerHTML = cart[i].fruit[j].name
@@ -604,11 +677,22 @@ function cartList() {
         hr = document.createElement('hr')
         td.appendChild(hr)
         p = document.createElement('p')
-        p.innerText = 'จำนวน : '
-        span = document.createElement('span')
-        span.className = 'item-' + i + '-amount'
-        span.innerText = cart[i].amount
-        p.appendChild(span)
+        p.innerText = 'จำนวน :  '
+        input = document.createElement('input')
+        input.setAttribute("type", "number");
+        input.setAttribute("min", "1");
+        input.className = 'item-' + i + '-amount'
+        input.dataset.pos = i
+        input.value = cart[i].amount
+        input.style.width = '10vw'
+        input.oninput = function(){
+            cart[input.dataset.pos].amount = input.value
+            calCartPrize()
+        }
+        input.onkeyup = function(){
+            input.value=input.value.replace(/[^\d]/,'')
+        }
+        p.appendChild(input)
         td.appendChild(p)
         hr = document.createElement('hr')
         td.appendChild(hr)
@@ -619,12 +703,22 @@ function cartList() {
         span.innerText = cart[i].amount * cart[i].price_incTopping
         p.appendChild(span)
         td.appendChild(p)
+        td.appendChild(document.createElement('hr'))
+        button = document.createElement('button')
+        button.className = 'btn btn-danger'
+        button.setAttribute("type", "button")
+        button.innerText = 'ลบรายการ'
+        button.onclick = function(){
+            cart.pop(input.dataset.pos)
+            cartList()
+        }
+        td.appendChild(button)
         tr.appendChild(td)
         tablecart.appendChild(tr)
-        calCartPrize()
-        reset()
 
     }
+    calCartPrize()
+    reset()
 
 }
 
@@ -633,6 +727,10 @@ function clearCart() {
     total_cart_price = 0;
     document.getElementById('ordered').style.display = 'none';
     document.getElementById('unordered').style.display = '';
+}
+function openCart(){
+    document.getElementById('ordered').style.display = '';
+    document.getElementById('unordered').style.display = 'none';
 }
 
 function checkMT5(event) {
@@ -664,7 +762,6 @@ function selectFruitThis(event) {
     if (fruit.length == 0){
         drink_price = 0
     }
-    console.log(fruit)
 }
 
 function changeDrinkPrice(price) {
@@ -679,6 +776,14 @@ function calCartPrize() {
     for (var i = 0; i < cart.length; i++) {
         total_cart_price += cart[i].amount * cart[i].price_incTopping
     }
+    axios.post('api_promotion/', {
+        id: document.getElementById('promotion').value
+    }).then(function(response) {
+        total_cart_price = total_cart_price-response.data.discount*cart.length
+        document.getElementById('cartTotalPrice').innerText = total_cart_price
+    }).catch(function(error) {
+        console.log(error)
+    });
     document.getElementById('cartTotalPrice').innerText = total_cart_price
 }
 
@@ -686,6 +791,7 @@ function order() {
     var order = {
         cart: cart,
         total_price: total_cart_price,
+        promotion:Number(document.getElementById('promotion').value),
     }
     clearCart()
     reset()

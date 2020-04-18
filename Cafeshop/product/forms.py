@@ -108,16 +108,21 @@ class DrinkForm(forms.ModelForm):
         fields = ('picture','d_name', 'd_desc', 'drink_type', 'cost') 
 
 class PromotionForm(forms.ModelForm):
-    s_date =  forms.DateTimeField(widget=forms.DateTimeInput(
+    name = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={ 'class' : 'form-control col-5', 'placeholder' : 'ชื่อของ Promotion' }),
+        label='Promotion name:'
+        )
+    s_date =  forms.DateField(widget=forms.DateInput(
         attrs={'type':'date', 'class' : 'form-control col-12' ,'placeholder' : 'วันที่เริ่ม promotion'}),
         label='Promotion start:'
     )
-    e_date =  forms.DateTimeField(widget=forms.DateTimeInput(
+    e_date =  forms.DateField(widget=forms.DateInput(
         attrs= {'type':'date', 'class' : 'form-control col-12' ,'placeholder' : 'วันที่หมด promotion'})
         ,label='Promotion end:'
     )
-    discount = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'type':'number', 'class' : 'form-control col-12' ,'placeholder' : 'ส่วนลด (หน่วยเป็น %)'}),
-        label='Discount : (หน่วยเป็น %)')
+    discount = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'type':'number', 'class' : 'form-control col-12' ,'placeholder' : 'ส่วนลดต่อเมนู(หน่วยเป็น บาท)'}),
+        label='Discount : (หน่วยเป็น บาท)')
     promo_desc = forms.CharField(
         max_length=255,
         widget=forms.TextInput(attrs={ 'class' : 'form-control col-12' , 'placeholder' : 'คำอธิบาย Promotion' }),
@@ -125,4 +130,4 @@ class PromotionForm(forms.ModelForm):
         )
     class Meta:
         model = Promotion
-        fields = ('s_date','e_date','discount','promo_desc')
+        fields = ('name','s_date','e_date','discount','promo_desc')

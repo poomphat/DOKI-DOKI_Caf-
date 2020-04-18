@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from product.forms import FruitForm,OptionForm,DrinkForm,PromotionForm
+from product.forms import FruitForm,OptionForm,DrinkForm,PromotionForm,Promotion
 from product.models import Fruit,Drink_info,Option
 # Create your views here.
 @login_required
@@ -18,6 +18,27 @@ def add_promotion(request):
         'form': form
     })
 
+
+@login_required
+def delete_promotion(request, pk):
+    p = Promotion.objects.get(id=pk)
+    p.delete()
+    return  redirect('index')
+
+@login_required
+def edit_promotion(request, pk):
+    p = Promotion.objects.get(id=pk)
+    form = PromotionForm(instance=p)
+    if request.method == "POST":
+        form = PromotionForm(request.POST,instance=p)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    context={
+        'form': form,
+        'p':p,
+    }
+    return render(request, 'managements/add_promo.html', context) 
 
 @login_required
 def add_fruit(request):

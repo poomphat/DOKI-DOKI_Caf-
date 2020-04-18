@@ -8,6 +8,7 @@ class Customer(models.Model):
     address = models.TextField()
 
 class Promotion(models.Model):
+    name = models.CharField(max_length=255, default="")
     s_date = models.DateField()
     e_date = models.DateField()
     promo_desc = models.TextField()
@@ -27,8 +28,8 @@ class Order(models.Model):
     total_price = models.FloatField(default=0)
     order_type = models.CharField(max_length=255, choices=TYPE_BUY)
     date = models.DateTimeField(auto_now=True)
-    promo_id = models.ForeignKey(Promotion, on_delete=models.CASCADE)
-    c_id = models.ForeignKey(Customer, on_delete=models.CASCADE)    
+    promo_id = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True)
+    c_id = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)    
     finish_flag = models.BooleanField(default=False)
 
 class Drink_info(models.Model):

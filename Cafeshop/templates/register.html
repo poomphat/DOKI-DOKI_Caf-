@@ -28,32 +28,38 @@
 
      <div class="container col-11 col-lg-6" style="margin-bottom: 10vh;">
          <div class="col-12">
-             {% if registered %}
-             <h1>Thank you for registering!</h1>
-             {% else %}
-             <h1>Register Here</h1>
-             <form method="POST" action="{% url 'register' %}">
-                 {% csrf_token %}
-                 <div class="regis">
-                     {% for field in user_form %}
-                     <div class="form-group">
-                         {{field.errors}}
-                         <label for="{{field.id_for_label}}">{{field.label}}</label>
-                         {{field}}
-                     </div>
-                     {% endfor %}
-                     {% for field in Customer_form %}
-                     <div class="form-group">
-                         {{field.errors}}
-                         <label for="{{field.id_for_label}}">{{field.label}}</label>
-                         {{field}}
-                     </div>
-                     {% endfor %}
-                 </div>
-                 <button type="submit" class="btn bottoncolor col">Register</button>
-             </form>
-
-             {% endif %}
+            
+            {% if registered %}
+                <h1>Thank you for registering!</h1>
+            {% else %}
+                    {% if a.id %}
+                        <h1>Register Here</h1>
+                        <form method="POST" action="{% url 'account_manage' pk=a.id %}" enctype="multipart/form-data">
+                    {% else %}
+                        <h1>Register Here</h1>
+                        <form method="POST" action="{% url 'register' %}">
+                    {% endif %}
+                        {% csrf_token %}
+                        <div class="regis">
+                            {% for field in user_form %}
+                            <div class="form-group">
+                                {{field.errors}}
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                {{field}}
+                            </div>
+                            {% endfor %}
+                            {% for field in Customer_form %}
+                            <div class="form-group">
+                                {{field.errors}}
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                {{field}}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn bottoncolor col">Register</button>
+                    </form>
+            {% endif %}
+                    
          </div>
      </div>
      </div>

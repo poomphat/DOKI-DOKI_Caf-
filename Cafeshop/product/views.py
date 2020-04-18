@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option
+from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option,Promotion
 from product.forms import UserForm,CustomerForm
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
+from django.core import serializers
 import json
 # Create your views here.
 
@@ -73,21 +74,55 @@ def register(request):
                 'registered':registered}
     return render(request,'register.html', context)
 
+@login_required
+def account_manage(request, pk):
+    a = Customer.objects.get(id=pk)
+    user_form = CustomerForm(instance=a)
+    Customer_form = CustomerForm(instance=a)
+    if request.method == 'POST':
+        user_form = UserForm(request.POST,request.FILES,instance=a)
+        Customer_form = CustomerForm(request.POST,request.FILES,instance=a)
+        if user_form.is_valid() and Customer_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+            Customer = Customer_form.save(commit=False)
+            Customer.user = user
+            Customer.save()
+        else:
+            print(user_form.errors,CustomerForm.errors)
+    else:
+        user_form = UserForm()
+        Customer_form = CustomerForm()
+
+    context =  {'user_form':user_form,
+                'Customer_form':Customer_form,
+                'a':a}
+    return render(request,'register.html', context)
+
+
 @csrf_exempt
 def api(request):
     data = json.loads(request.body)
     order_data = data['order']
     order = Order()
     print(request.user.id)
-    order.c_id = Customer.objects.get(user__id=request.user.id)#instance
+    if request.user.id != 1 :
+        order.c_id = Customer.objects.get(user__id=request.user.id)#instance
+        order.order_type = 'Online_buy'
+    else :
+        order.c_id = None
+        order.order_type = 'Local_buy'
     order.total_price = order_data['total_price']
-    order.promo_id = Promotion.objects.get(pk=1)
+    if order_data['promotion'] == 0:
+        order.promo_id = None
+    else:
+        order.promo_id = Promotion.objects.get(pk=order_data['promotion'])
     order.save()
     for item in order_data['cart']:
         order_list = Order_list()
         order_list.amount = item['amount']
         order_list.unit_price = item['price_incTopping']
-        print(item['id'])
         order_list.d_id = Drink_info.objects.get(pk=item['id'])
         special = Special(special_type=item['kind'].capitalize()) 
         special.save()
@@ -197,15 +232,15 @@ def queue(request):
             'time':order.date.strftime('%H:%M'),
             'total_price':order.total_price,
             'your':False,
-            'customer_name':order.c_id.user.first_name,
-            
+            'order_type':order.order_type,
+            'customer_name':None
         }
-        if Customer.objects.get(user__id=request.user.id).id == order.c_id.id:
-            order_list['your'] = True
+        if (request.user.id != 1):
+            if(order.c_id != None):
+                order_list['customer_name'] = order.c_id.user.first_name
+                if Customer.objects.get(user__id=request.user.id).id == order.c_id.id:
+                    order_list['your'] = True
         queue.append(order_list)
-        print(order_list['your'])
-        print(request.user.id)
-        print(order.c_id.id)
     context = {
         'queues':queue
     }
@@ -217,5 +252,32 @@ def order_success(request, id):
     order.save()
     return redirect('queue')
 
+@csrf_exempt
 def api_drink(request):
-    return ""
+    data = {}   
+    drink_infos = Drink_info.objects.exclude(id=1)
+    if request.method == 'GET':
+        data = serializers.serialize("json", drink_infos) #กูจะเปลี่ยนสีเว็บใหม่ เอาไหม หรืออันเดิมดีเเล้ววว ไหนธีมมึง ซ้าสสส กูต่อVPNยังไม่ได้เลย ต่อไมวะ
+    return HttpResponse(data, status=200)
+
+@csrf_exempt
+def api_promotion(request):
+    data = json.loads(request.body)
+    res = {
+        'discount':0
+    }
+    print(data)
+    if int(data['id']) != 0:
+        promotion = Promotion.objects.get(pk=data['id'])
+        res = {
+            'discount':promotion.discount
+        }
+    return JsonResponse(res, status=200)
+
+@csrf_exempt
+def api_option(request):
+    data = {}   
+    options = Option.objects.all()
+    if request.method == 'GET':
+        data = serializers.serialize("json", options)
+    return HttpResponse(data, status=200)

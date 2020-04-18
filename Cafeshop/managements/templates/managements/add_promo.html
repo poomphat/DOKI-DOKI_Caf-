@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container addfruit col-12">
-    <h2>เพิ่ม Promotion</h2>
+    {% if p.id %}
+            <form method="POST" action="{% url 'edit_promotion' pk=p.id %}" enctype="multipart/form-data">
+            <h1>แก้ไข Promotion</h1>
+        {% else %}
+            <form method="POST" action="{% url 'add_promotion' %}" enctype="multipart/form-data">
+            <h1>เพิ่ม Promotion</h1>
+        {% endif %}
     <hr>
     <form method="POST" action="{% url 'add_promotion' %}">
         {% csrf_token %}

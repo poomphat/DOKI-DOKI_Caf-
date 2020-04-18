@@ -7,12 +7,19 @@
             <div class="listbody">
                 {% for queue in queues %}
                 <div class="row">
-                    <div class="titledrink col-3  {% if queue.your %} bghl {% endif %}" data-toggle="collapse" href="#collapse{{ forloop.counter }}"
+                    <div class="titledrink col-3 col-lg-3  {% if queue.your %} bghl {% endif %} {% if queue.order_type == 'Local_buy' %} bglc {% endif %}" data-toggle="collapse" href="#collapse{{ forloop.counter }}"
                         role="button" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                         <p font-size="28px">{{ forloop.counter }}</p>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8 col-lg-5">
                         <p class="text-primary">หมายเลขออเดอร์ : {{queue.id}}
+                            {% if queue.order_type == 'Local_buy' %} 
+                            <span class='text-primary'>(หน้าร้าน)</span>
+                            {% elif queue.order_type == 'Online_buy' %}
+                            <span class='text-primary'>(online)</span>
+                            {% endif %}
+                        </p>
+                        <p>
                             {% if queue.your %} 
                             <span class='text-warning'>(ออเดอร์ของคุณ)</span>
                             {% endif %}
@@ -20,10 +27,13 @@
                         <p class="text-secondary">วันที่ : {{queue.date.date}}</p>
                         <p class="text-secondary">เวลา : {{queue.time}}น.</p>
                         <p class="text-success">ราคารวม : {{queue.total_price}}</p>
+                         {% if queue.promo_id.id > 0 %} 
+                            <p class="text-warning">ใช้โปรโมชั่น : {{queue.promo_id.name}}</p>
+                        {% endif %}
                         <button type='button' class='btn btn-primary' data-toggle="collapse"
                             href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false"
-                            aria-controls="collapse{{ forloop.counter }}">ดูรายละเอียด</button>
-                        <a href="{% url 'order_success' queue.id %}"><button type='button' class='btn btn-warning'>เสร็จสิ้น</button></a>
+                            aria-controls="collapse{{ forloop.counter }}" style="margin-bottom: 1vh;">ดูรายละเอียด</button>
+                        <a href="{% url 'order_success' queue.id %}"><button type='button' class='btn btn-warning' style="margin-bottom: 1vh;">เสร็จสิ้น</button></a>
                     </div>
                     <div class="collapse mb-3 col-12" id="collapse{{ forloop.counter }}">
                         <hr>
@@ -56,6 +66,7 @@
                                             {% endfor %}
                                         </ul>
                                         {% endif %}
+                                        <p class="text-secondary">จำนวน : {{item.amount}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -83,6 +94,10 @@
         border-radius: 20px;
         margin-left: 1vw;
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: 0.15s ease;
+    }
+    .titledrink:hover{
+        transform: scale(0.95,0.95);
     }
     .card{
         border-radius: 20px;
@@ -142,6 +157,9 @@
     }
     .bghl{
         background: linear-gradient(to right, #ff9966, #ff5e62);
+    }
+    .bglc{
+        background: linear-gradient(to right, #c2e59c, #64b3f4);
     }
      @media only screen and (max-width: 1400px) {
          .titledrink {
