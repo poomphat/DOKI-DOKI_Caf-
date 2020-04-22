@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,default="")
+    picture = models.ImageField(default='customer/default.png',upload_to='customer/',null=True,blank=True)
     address = models.TextField()
 
 class Promotion(models.Model):
@@ -41,6 +42,7 @@ class Drink_info(models.Model):
     )
     picture = models.ImageField(default='product/default.png',upload_to='product/',null=True,blank=True)
     d_name = models.CharField(max_length=255)
+    how_to_make = models.TextField(default='')
     d_desc = models.CharField(max_length=255, default="")
     cost = models.IntegerField()
     drink_type = models.CharField(max_length=50, choices=DRINK_TYPE)

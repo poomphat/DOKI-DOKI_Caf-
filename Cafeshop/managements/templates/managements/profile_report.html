@@ -1,0 +1,232 @@
+{% extends "base.html" %} {% block content %}  {% load static %}
+    <div class="row d-flex justify-content-around" style="margin-top: 8vh">
+        <div class="col-11 col-lg-4 col-sm-4 peo">
+            <div class="">
+                <div class="list_r">
+                    <img class="peopic" src="..{{ user.customer.picture.url }}">
+                    <hr>
+                        <h4>ชื่อ-นามสกุล</h4>
+                        <li class="text-primary infopre">{{request.user.first_name}} {{request.user.last_name}}</li>
+                        <hr>
+                        <h4>E-mail</h4>
+                        <li class="text-primary infopre">{{request.user.email}}</li>
+                        <hr>
+                        <h4>Address</h4>
+                        <li class="text-primary infopre">{{request.user.customer.address}}</li>
+
+                        <a href="{% url 'account_manage'%}" class="btn btn-warning col" style="margin-top: 4vh;margin-bottom: 1vh;">
+                                        เเก้ไขข้อมูล
+                                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-11 col-lg-8 col-sm-8">
+            <div class="list_r">
+                 {% for queue in yourOrders %}
+                <div class="row">
+                    <div class="titledrink col-3 col-lg-3" data-toggle="collapse" href="#collapse{{ forloop.counter }}"
+                        role="button" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                        <p font-size="28px">{{ forloop.counter }}</p>
+                    </div>
+                    <div class="col-8 col-lg-5">
+                        <p>
+                            {% if queue.your %} 
+                            <span class='text-warning'>(ออเดอร์ของคุณ)</span>
+                            {% endif %}
+                        </p>
+                        <p class="text-secondary">วันที่ : {{queue.date.date}}</p>
+                        <p class="text-secondary">เวลา : {{queue.time}}น.</p>
+                        <p class="text-success">ราคารวม : {{ queue.total_price|floatformat:2 }} </p>
+                         {% if queue.promo_id.id > 0 %} 
+                            <p class="text-warning">ใช้โปรโมชั่น : {{queue.promo_id.name}}</p>
+                        {% endif %}
+                        <button type='button' class='btn btn-primary' data-toggle="collapse"
+                            href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false"
+                            aria-controls="collapse{{ forloop.counter }}" style="margin-bottom: 1vh;">ดูรายละเอียด</button>
+                    </div>
+                    <div class="collapse mb-3 col-12" id="collapse{{ forloop.counter }}">
+                        <hr>
+                        <div class="card card-body">
+                            {% for item in queue.items %}
+                            <div class="container-fluid" style="margin-bottom: 4vh;">
+                                <div class="row">
+                                    <div class="titledrink col-3 queue_item"
+                                        style="margin-top: 1vh; background-image:url('..{{ item.picture.url }}');">
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-primary">{{ forloop.counter }}). {{item.name}}</p>
+                                        <p class="text-secondary">ราคารวมท็อปปิ้ง : {{item.unit_price}}</p>
+                                        {% if item.sweetness %}
+                                        <p class="text-secondary">ความหวาน : {{item.sweetness}}</p>
+                                        {% endif %}
+                                        {% if item.fruits %}
+                                        <p class="text-secondary">ผลไม้ที่ใส่ : </p>
+                                        <ul>
+                                            {% for fruit in item.fruits %}
+                                            <li class="text-secondary">{{fruit.name}}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                        {% if item.toppings %}
+                                        <p class="text-secondary">Topping ที่ใส่ : </p>
+                                        <ul>
+                                            {% for topping in item.toppings %}
+                                            <li class="text-secondary">{{topping.name}}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                        <p class="text-secondary">จำนวน : {{item.amount}}</p>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <hr>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+<style>
+    .peopic{
+        width:100%;
+        height: auto;
+        border-radius: 10px;
+        border: px solid black;
+    }
+    .list_r {
+        background-color: rgba(253, 253, 253, 0.9);
+        padding: 3%;
+        border-radius: 10px;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        margin-bottom: 2vh;
+        top: 3vh;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .titlecus {
+        width: 200px;
+        height: 220px;
+        background-color: #FEC8D8;
+        text-align: center;
+        line-height: 220px;
+        border-radius: 20px;
+        margin-left: 1vw;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: 0.15s ease;
+    }
+    .titlecus:hover{
+        transform: scale(0.95,0.95);
+    }
+     .titledrink:hover{
+        transform: scale(0.95,0.95);
+    }
+    .card{
+        border-radius: 20px;
+        background: #dddddd;
+        box-shadow: inset 11px 11px 22px #aaaaaa, 
+            inset -11px -11px 22px #ffffff;
+    }
+    .titledrink {
+        width: 100px;
+        height: 220px;
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+        text-align: center;
+        line-height: 220px;
+        border-radius: 20px;
+        margin-left: 1vw;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: 0.15s ease;
+    }
+    p {
+        font-size: 20px;
+    }
+    .queue_item {
+        background-position: center;
+        background-size: cover;
+    }
+
+    table {
+        font-size: 18px;
+    }
+
+    .listbody {
+        height: 68vh;
+
+    }
+    .people{
+        height: 100%;
+    }
+    .alltable {
+        width: 100%;
+        overflow-x: hidden;
+    }
+    .bghl{
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+    }
+    .bglc{
+        background: linear-gradient(to right, #c2e59c, #64b3f4);
+    }
+     @media only screen and (max-width: 1400px) {
+         .titledrink {
+            margin-left: 3vw;
+        }
+     }
+    @media only screen and (max-width: 500px) {
+
+        .table,
+        .list_r label,
+        .list_r a,
+        .list button {
+            font-size: 14px;
+        }
+        .titledrink {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+        }
+    
+
+        .list_r label {
+            font-size: 18px;
+        }
+
+        .table {
+            width: 400px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            width: 20%;
+        }
+
+        .titledrink {
+            margin-left: 5vw;
+        }
+    }
+</style>
+<script>
+        $(document).ready(function () {
+                            $(".list_r").animate({
+                                        'top': '0vh',
+                                        'opacity': 1
+                                        },500, function() {
+                                });
+                    
+                });
+        </script>
+{% endblock content %}

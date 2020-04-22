@@ -1,23 +1,9 @@
-var name = ''
-var drink_id = ''
-var drink_type = ''
-var drink_price = ''
-var drink_kind = ''
-var sweetness = ''
-var topping_list = Array()
-var cart = Array()
-var total_cart_price = 0
-var sweetness_name = {
-    'normalsweet': 'หวานปกติ',
-    'lesssweet': 'หวานน้อย',
-    'moresweet': 'หวานมาก',
-}
-var fruit = Array()
+$(document).ready(cartList());
 
 function openorder() {
     orderside = document.getElementById('order');
     orderside.style.transition = "ease 0.55s";
-    console.log(orderside.style.right);
+    //console.log(orderside.style.right);
     if (orderside.style.right == '-100%' || orderside.style.right == '') {
         orderside.style.right = "0%";
     } else {
@@ -25,128 +11,24 @@ function openorder() {
     }
 }
 
-function deleteMenu() {
-    document.querySelectorAll('.menu').forEach(el => el.remove());
-}
-
-function deleteAllTopping() {
-    document.querySelectorAll('.addTopping').forEach(el => el.remove());
-}
-
-function addToCart() {
-    if (!drink_id == '') {
-        addtoppingElement = document.querySelectorAll('.addTopping')
-        var temp_price = 0
-        for (var i = 0; i < addtoppingElement.length; i++) {
-            first = addtoppingElement[i].firstElementChild
-            price = Number(first.options[first.selectedIndex].dataset.price)
-            id = first.options[first.selectedIndex].value
-            name = first.options[first.selectedIndex].innerText
-            next = first.nextElementSibling
-            amount = Number(next.value)
-            temp_price += Number(price) * amount
-            topping_list.push({
-                id: id,
-                name: name,
-                price: price,
-                amount: amount
-            })
-
-        }
-        var drink = {
-            id: drink_id,
-            name: drink_name,
-            type: drink_type,
-            kind: drink_kind,
-            sweetness: sweetness,
-            price: drink_price,
-            amount: 1,
-            price_incTopping: temp_price + drink_price,
-            fruit: fruit,
-            topping_list: topping_list
-        }
-        cart.push(drink)
-        $('.bd-example-modal-xl-coffee').modal('hide')
-        $('.bd-example-modal-xl-smoothie').modal('hide')
-        reset()
-        cartList()
-        document.getElementById('nonDrinkAddtoCard').style.display = '';
-        document.getElementById('ordered').style.display = '';
-        document.getElementById('unordered').style.display = 'none';
-    } else {
-        document.getElementById('nonDrinkAddtoCard').style.display = 'inline';
-    }
-
-}
-
-function clearallcoffee() {
-    var O = document.querySelectorAll('.btncool');
-    for (var i = 0; i < O.length; i++) {
-        O[i].style.bordercolor = "#EFEFEF";
-        O[i].style.color = "black";
-    }
-}
-
-function selectThis(event) {
-
-    target = event.target.parentNode
-    target = target.firstElementChild
-
-    drink_name = target.innerText
-    target = target.nextElementSibling
-    drink_id = Number(target.innerText)
-    target = target.nextSibling
-    drink_type = target.innerText
-    target = target.nextSibling
-    drink_price = Number(target.innerText)
-    drink_kind = 'coffee'
-
-    sweet_select = document.getElementsByClassName('sweetness')[0]
-    sweetness = sweet_select.options[sweet_select.selectedIndex].value
-    changeDrinkPrice(drink_price)
-    event.target.style.bordercolor = "#44D362";
-    event.target.style.color = "white";
-}
-
-function recalDrinkPrice(event) {
-    addtoppingElement = document.querySelectorAll('.addTopping')
-    var temp_price = 0
-    for (var i = 0; i < addtoppingElement.length; i++) {
-        first = addtoppingElement[i].firstElementChild
-        price = first.options[first.selectedIndex].dataset.price
-        next = first.nextElementSibling
-        price = Number(price) * Number(next.value)
-        temp_price += price
-
-    }
-    changeDrinkPrice(drink_price + temp_price)
-}
-
-function reset() {
-    deleteMenu()
-    deleteAllTopping()
-    changeDrinkPrice(0)
-    clearallcoffee()
-    drink_name = ''
-    drink_id = ''
-    drink_type = ''
-    drink_price = ''
-    sweetness = ''
-    drink_kind = ''
-    topping_list = Array()
-    fruit = Array()
-
-}
-
-function changeSweet(event) {
-    var select = event.target
-    var option = select.options[select.selectedIndex]
-    sweetness = select.options[select.selectedIndex].value
-}
+total_price = 0
 
 function cartList() {
+    Cookies.set('order', JSON.stringify(order))
     clearCart()
-    tablecart = document.getElementById('cart')
+    console.log(order)
+    var cart = []
+    if (Cookies.get('cart') !== undefined) {
+        cart = JSON.parse(Cookies.get('cart'))
+    }
+    if (cart.length > 0) {
+        document.getElementById('ordered').style.display = '';
+        document.getElementById('unordered').style.display = 'none';
+    }
+    tablecart = document.getElementById('cart') //hehe boi
+    if (cart.length > 0) {
+        openCart()
+    }
     for (var i = 0; i < cart.length; i++) {
         tr = document.createElement('tr')
         tr.className = 'cartItem'
@@ -162,6 +44,11 @@ function cartList() {
             td.appendChild(hr)
             ul = document.createElement('ul')
             li = document.createElement('li')
+            var sweetness_name = {
+                'normalsweet': 'หวานปกติ',
+                'lesssweet': 'หวานน้อย',
+                'moresweet': 'หวานมาก',
+            }
             li.innerHTML = sweetness_name[cart[i].sweetness]
             ul.appendChild(li)
             td.appendChild(ul)
@@ -193,11 +80,22 @@ function cartList() {
         hr = document.createElement('hr')
         td.appendChild(hr)
         p = document.createElement('p')
-        p.innerText = 'จำนวน : '
-        span = document.createElement('span')
-        span.className = 'item-' + i + '-amount'
-        span.innerText = cart[i].amount
-        p.appendChild(span)
+        p.innerText = 'จำนวน :  '
+        input = document.createElement('input')
+        input.setAttribute("type", "number");
+        input.setAttribute("min", "1");
+        input.className = 'item-' + i + '-amount'
+        input.dataset.pos = i
+        input.value = cart[i].amount
+        input.style.width = '10vw'
+        input.oninput = function() {
+            cart[input.dataset.pos].amount = input.value
+            calCartPrize()
+        }
+        input.onkeyup = function() {
+            input.value = input.value.replace(/[^\d]/, '')
+        }
+        p.appendChild(input)
         td.appendChild(p)
         hr = document.createElement('hr')
         td.appendChild(hr)
@@ -208,48 +106,37 @@ function cartList() {
         span.innerText = cart[i].amount * cart[i].price_incTopping
         p.appendChild(span)
         td.appendChild(p)
+        td.appendChild(document.createElement('hr'))
+        button = document.createElement('button')
+        button.className = 'btn btn-danger'
+        button.setAttribute("type", "button")
+        button.innerText = 'ลบรายการ'
+        button.onclick = function() {
+            var x = input.dataset.pos
+            cart.pop(x)
+            Cookies.set('cart', JSON.stringify(cart))
+            cartList()
+        }
+        td.appendChild(button)
         tr.appendChild(td)
         tablecart.appendChild(tr)
-        calCartPrize()
 
     }
 
+    calCartPrize()
+    console.log(order)
 }
 
 function clearCart() {
     document.querySelectorAll('.cartItem').forEach(el => el.remove());
-    total_cart_price = 0;
+    total_price = 0;
     document.getElementById('ordered').style.display = 'none';
     document.getElementById('unordered').style.display = '';
 }
 
-function checkMT5(event) {
-    if (Number(event.target.value) > 5) {
-        event.target.value = 5;
-    }
-}
-
-function selectFruitThis(event) {
-
-    target = event.target
-    drink_name = 'Juice'
-    drink_id = 8
-    drink_kind = 'juice'
-    drink_price = 45
-    if (!(fruit.some(f => f.id == target.dataset.id))) {
-        fruit.push({
-
-            id: target.dataset.id,
-            name: target.innerText
-
-        })
-        target.style.bordercolor = "#44D362";
-        target.style.color = "white";
-    } else {
-        fruit = fruit.filter(f => f.id !== target.dataset.id)
-        target.style.bordercolor = "#EFEFEF";
-        target.style.color = "black";
-    }
+function openCart() {
+    document.getElementById('ordered').style.display = '';
+    document.getElementById('unordered').style.display = 'none';
 }
 
 function changeDrinkPrice(price) {
@@ -260,28 +147,49 @@ function changeDrinkPrice(price) {
 }
 
 function calCartPrize() {
-    total_cart_price = 0
+    var cart = []
+    if (Cookies.get('cart') !== undefined) {
+        cart = JSON.parse(Cookies.get('cart'))
+    }
+    var total_cart_price = 0
     for (var i = 0; i < cart.length; i++) {
         total_cart_price += cart[i].amount * cart[i].price_incTopping
+        order.total_price = total_cart_price
     }
-    document.getElementById('cartTotalPrice').innerText = total_cart_price
-}
-
-function order() {
-    var order = {
-        cart: cart,
-        total_price: total_cart_price,
-    }
-    clearCart()
-    reset()
-    cart = Array()
-    axios.post('api/', {
-        order: order
+    axios.post('/api_promotion/', {
+        id: document.getElementById('promotion').value
     }).then(function(response) {
-        console.log(response)
+        total_cart_price = total_cart_price - response.data.discount * cart.length
+        document.getElementById('cartTotalPrice').innerText = total_cart_price
+        total_price = total_cart_price
+            //console.log(response)
     }).catch(function(error) {
         console.log(error)
     });
+    document.getElementById('cartTotalPrice').innerText = total_cart_price
+}
 
+function makeorder() {
+    order = {
+        cart: '',
+        total_price: 0,
+        promotion: 0,
+    }
+    order.cart = JSON.parse(Cookies.get('cart'))
+    order.promotion = Number(document.getElementById('promotion').value)
+    order.total_price = total_price
+
+    var x = axios.post('/api/', {
+        order: order
+    }).then(function(response) {
+        Cookies.remove('cart')
+        console.log(response)
+        return response
+    }).catch(function(error) {
+        console.log(error)
+    });
+    console.log(x)
+    clearCart()
+    cart = Array()
 
 }

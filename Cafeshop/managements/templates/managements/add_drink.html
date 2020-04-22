@@ -30,6 +30,8 @@
         padding: 5%;
         border-radius: 10px;
         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        opacity: 0;
+        top: 3vh;
     }
        @media screen and (max-width: 600px) {
         .addfruit {
@@ -53,5 +55,14 @@
         transform: scale(1.07, 1.07);
     }
 </style>
-
+<script>
+        $(document).ready(function () {
+                            $(".addfruit").animate({
+                                        'top': '0vh',
+                                        'opacity': 1
+                                        },500, function() {
+                                });
+                    
+                });
+        </script>
 {% endblock content %}

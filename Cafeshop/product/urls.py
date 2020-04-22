@@ -28,5 +28,5 @@ urlpatterns = [
     path('api_option/', views.api_option, name='api_option'),
     path('queue/', views.queue, name='queue'),
     path('order_success/<int:id>/', views.order_success, name='order_success'),
-    path('account_manage/<int:pk>/', views.account_manage, name='account_manage'),
+    path('account_manage/',views.account_manage, name='account_manage'),
 ]

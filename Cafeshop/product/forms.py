@@ -40,12 +40,47 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'password', 'email', 'first_name', 'last_name')
 
+class UserForm2(forms.ModelForm):
+    username = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={ 'class' : 'form-control col-11',
+                                        'placeholder' : 'username' }),
+        
+        label='Username : '
+        )
+    first_name = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={ 'class' : 'form-control col-11',
+                                        'placeholder' : 'ชื่อ' }),
+        
+        label='first name : '
+        )
+    last_name = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={ 'class' : 'form-control  col-11',
+                                        'placeholder' : 'นามสกุล' }),
+        
+        label='last name : '
+        )
+    email = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={ 'class' : 'form-control  col-11',
+                                        'placeholder' : 'email' }),
+        
+        label='E-mail : '
+        )
+    def __str__(self):
+        return '%s %s' % (self.first_name, self.last_name)
+    class Meta():
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
 
 class CustomerForm(forms.ModelForm):
+    picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'form-control-file col-5'}),required=False)
     address = forms.CharField(widget=forms.Textarea(attrs={ 'class' : 'form-control col-11'}))
     class Meta():
         model = Customer
-        fields = ['address']
+        fields = ['address', 'picture']
 
 
 class FruitForm(forms.ModelForm):
@@ -99,13 +134,15 @@ class DrinkForm(forms.ModelForm):
         widget=forms.TextInput(attrs={ 'class' : 'form-control col-12' , 'placeholder' : 'คำอธิบายเครื่องดื่ม' }),
         label='Drink description:'
         )
+    how_to_make = forms.CharField(widget=forms.Textarea(attrs={ 'class' : 'form-control col-11'}),
+     label='วิธีทำเครื่องดื่ม :')
     cost = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'type':'number', 'class' : 'form-control col-12' ,'placeholder' : 'ราคาของเครื่องดื่ม'}),
         label='Drinks price:')
     drink_type = forms.ChoiceField(choices=Drink_info.DRINK_TYPE, 
                     widget=forms.Select(attrs={'class' : 'form-control col-12'}))       
     class Meta:
         model = Drink_info
-        fields = ('picture','d_name', 'd_desc', 'drink_type', 'cost') 
+        fields = ('picture','d_name', 'd_desc', 'how_to_make', 'drink_type', 'cost') 
 
 class PromotionForm(forms.ModelForm):
     name = forms.CharField(

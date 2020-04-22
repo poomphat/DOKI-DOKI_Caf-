@@ -27,7 +27,7 @@
                                     <p class="text-success">คำอธิบาย : {{di.promo_desc}}</p>
                                     <p class="text-primary">start at : {{di.s_date}}</p>
                                     <p class="text-danger">end at : {{di.e_date}}</p>
-                                    {% if request.user.id == 1%}
+                                    {% ifequal user.groups.all.0.name 'Staff' %}
                                     <p>
                                     <a href="{% url 'edit_promotion' di.id %}" class="btn btn-warning text-white"> 
                                         <img style="height:20px; filter: invert(1);" src="{% static 'wrench-solid.svg' %}">
@@ -37,7 +37,7 @@
                                     </a>
 
                                     </p>
-                                    {% endif%}
+                                    {% endifequal %}
                                 </div>
                         </div>  
                         </td>
@@ -86,7 +86,7 @@
                             </select>
                         </div>
                         <h2 style="margin-top: 5vh;"> Topping <button type='button' class='btn btn-success'
-                                onclick="addTopping(1);recalDrinkPrice(event)">+</button></h2>
+                                onclick="addTopping(1);">+</button></h2>
                         <hr>
 
                         <div class="col-12" id='toppingZone-coffee'>
@@ -127,7 +127,7 @@
                 
                     {% for fruit in fruits %}
                     <div class="col-12 col-md-6 col-lg-3">
-                    <div class="menu" onclick='selectFruitThis(event);recalDrinkPrice(event);'>
+                    <div class="menu" onclick='selectFruitThis(event);recalDrinkPrice();'>
                         <button class="btncool smoot col" style='pointer-events: none;margin-top: 1vh; background-image: url("../managements{{fruit.picture.url}}");' class="btncool"
                             name="{{ fruit.fruit_name }}" > 
                         </button> 
@@ -140,7 +140,7 @@
                 <div class="row">
                     <div class="col-12">
                         <h2 style="margin-top: 5vh;"> Topping <button type='button' class='btn btn-success'
-                                onclick="addTopping(2);recalDrinkPrice(event)">+</button></h2>
+                                onclick="addTopping(2);">+</button></h2>
                         <hr>
                     </div>
                     <div class="col-12" id='toppingZone-smoothie'>
@@ -195,7 +195,7 @@
             </div>
             <div class='col-4'>
                 <button type='button' class='btn btn-success'
-                    style="float: right;position: relative;right: 0.75rem;" onclick='order()'>สั่งซื้อ</button>
+                    style="float: right;position: relative;right: 0.75rem;" onclick='order();'>สั่งซื้อ</button>
             </div>
         </div>
         <hr>
@@ -220,13 +220,6 @@
     .thead-custom {
         background: linear-gradient(to right, #ff9966, #ff5e62);
         background-attachment: fixed;
-    }
-    #cart tr {
-        background-color: #fff;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
-    #cart tr:first-child {
-        background: linear-gradient(to right, #ff9966, #ff5e62);
     }
     .btnsideorder {
         position: fixed;
@@ -275,6 +268,7 @@
             height: 150px !important;
             width: 100px !important;
             line-height: 150px !important;
+            margin-left: 5vw;
         }
     }
     @media only screen and (max-width: 700px) {
@@ -286,6 +280,7 @@
             height: 100px !important;
             width: 100px !important;
             line-height: 100px !important;
+            margin-left: 5vw!important;
         }
     }
     .titlepromo{
@@ -297,6 +292,7 @@
         background: linear-gradient(to right, #11998e, #38ef7d);
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         transition: 0.15s ease;
+        margin-left: 2vw!important;
     }
     .listbody{
         overflow-y: scroll;
@@ -440,6 +436,7 @@
                 select.setAttribute('id', 'inputGroupSelect01')
                 select.style.width = '15vw'
                 select.style.display = 'inline-block'
+                select.onchange = recalDrinkPrice()
                 for(let i=0 ; i<data.length; i++){
                     var top = data[i]['fields']
                     if ((!option_list.includes(data[i].pk))){
@@ -448,9 +445,10 @@
                 }
                 topping.appendChild(select)
                 topping.innerHTML +=
-                "<input type='number' name='amount' class=\'form-control mt-1 ml-3 mr-3\' id='amount' value=\'1\' min=\'1\' max=\'5\' oninput=\'checkMT5(event);recalDrinkPrice(event)\' style=\'width:10vw;display:inline-block\' oninput=\'recalDrinkPrice(event)\'>" +
-                "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);recalDrinkPrice(event);' style=\'display:inline-block\'>-</button>"
+                "<input type='number' name='amount' class=\'form-control mt-1 ml-3 mr-3\' id='amount' value=\'1\' min=\'1\' max=\'5\' oninput=\'checkMT5(event);recalDrinkPrice()\' style=\'width:10vw;display:inline-block\' oninput=\'recalDrinkPrice()\'>" +
+                "<button type='button' class='btn btn-danger' onclick='deleteTopping(this);' style=\'display:inline-block\'>-</button>"
                 $(topping).appendTo(toppingZone).hide().show('fast');
+                recalDrinkPrice()
                 }
             }).catch(function(error) {
                 console.log(error)
@@ -467,7 +465,7 @@
     }
     function deleteTopping(element) {
         parent = element.parentNode
-        parent.remove()
+        $(parent).hide("fast", function(){ $(this).remove();recalDrinkPrice(); })
     }
 
     function addMenu(type) {
@@ -504,7 +502,7 @@
                 console.log(error)
             });
     }
-    var name = ''
+var name = ''
 var drink_id = ''
 var drink_type = ''
 var drink_price = ''
@@ -513,23 +511,8 @@ var sweetness = ''
 var topping_list = Array()
 var cart = Array()
 var total_cart_price = 0
-var sweetness_name = {
-    'normalsweet': 'หวานปกติ',
-    'lesssweet': 'หวานน้อย',
-    'moresweet': 'หวานมาก',
-}
 var fruit = Array()
 
-function openorder() {
-    orderside = document.getElementById('order');
-    orderside.style.transition = "ease 0.55s";
-    //console.log(orderside.style.right);
-    if (orderside.style.right == '-100%' || orderside.style.right == '') {
-        orderside.style.right = "0%";
-    } else {
-        orderside.style.right = "-100%";
-    }
-}
 
 function deleteMenu() {
     document.querySelectorAll('.menii').forEach(el => el.remove());
@@ -572,13 +555,13 @@ function addToCart() {
             topping_list: topping_list
         }
         cart.push(drink)
+        Cookies.set('cart', JSON.stringify(cart))
         $('.bd-example-modal-xl-coffee').modal('hide')
         $('.bd-example-modal-xl-smoothie').modal('hide')
         reset()
         cartList()
         document.getElementById('nonDrinkAddtoCard').style.display = '';
-        document.getElementById('ordered').style.display = '';
-        document.getElementById('unordered').style.display = 'none';
+
     } else {
         if(drink_kind == 'coffee'){
         document.getElementById('nonDrinkAddtoCard').style.display = 'inline';
@@ -615,12 +598,14 @@ function selectThis(event) {
     event.target.style.color = "white";
 }
 
-function recalDrinkPrice(event) {
+function recalDrinkPrice() {
     addtoppingElement = document.querySelectorAll('.addTopping')
+    console.log(addtoppingElement)
     var temp_price = 0
     for (var i = 0; i < addtoppingElement.length; i++) {
         first = addtoppingElement[i].firstElementChild
         price = first.options[first.selectedIndex].dataset.price
+        console.log(price)
         next = first.nextElementSibling
         price = Number(price) * Number(next.value)
         temp_price += price
@@ -649,115 +634,6 @@ function changeSweet(event) {
     var select = event.target
     var option = select.options[select.selectedIndex]
     sweetness = select.options[select.selectedIndex].value
-}
-
-function cartList() {
-    clearCart()
-    tablecart = document.getElementById('cart')
-    if (cart.length > 0){
-        openCart()
-    }
-    for (var i = 0; i < cart.length; i++) {
-        console.log(i)
-        tr = document.createElement('tr')
-        tr.className = 'cartItem'
-        td = document.createElement('td')
-        td.innerText = i + 1
-        tr.appendChild(td)
-        td = document.createElement('td')
-        p = document.createElement('p')
-        if (cart[i].kind == 'coffee') {
-            p.innerHTML = cart[i].name + '(' + cart[i].type + ')'
-            td.appendChild(p)
-            hr = document.createElement('hr')
-            td.appendChild(hr)
-            ul = document.createElement('ul')
-            li = document.createElement('li')
-            li.innerHTML = sweetness_name[cart[i].sweetness]
-            ul.appendChild(li)
-            td.appendChild(ul)
-        } else if (cart[i].kind == 'juice') {
-            p.innerHTML = cart[i].name
-            td.appendChild(p)
-            hr = document.createElement('hr')
-            td.appendChild(hr)
-            ul = document.createElement('ul')
-            for (var j = 0; j < cart[i].fruit.length; j++) {
-                li = document.createElement('li')
-                li.innerHTML = cart[i].fruit[j].name
-                ul.appendChild(li)
-                td.appendChild(ul)
-            }
-        }
-        if (cart[i].topping_list.length > 0) {
-            hr = document.createElement('hr')
-            td.appendChild(hr)
-            ul = document.createElement('ul')
-            for (var j = 0; j < cart[i].topping_list.length; j++) {
-                li = document.createElement('li')
-                li.innerHTML = cart[i].topping_list[j].name + '(' + cart[i].topping_list[j].amount + ')'
-                ul.appendChild(li)
-                td.appendChild(ul)
-            }
-            td.appendChild(ul)
-        }
-        hr = document.createElement('hr')
-        td.appendChild(hr)
-        p = document.createElement('p')
-        p.innerText = 'จำนวน :  '
-        input = document.createElement('input')
-        input.setAttribute("type", "number");
-        input.setAttribute("min", "1");
-        input.className = 'item-' + i + '-amount'
-        input.dataset.pos = i
-        input.value = cart[i].amount
-        input.style.width = '10vw'
-        input.oninput = function(){
-            cart[input.dataset.pos].amount = input.value
-            calCartPrize()
-        }
-        input.onkeyup = function(){
-            input.value=input.value.replace(/[^\d]/,'')
-        }
-        p.appendChild(input)
-        td.appendChild(p)
-        hr = document.createElement('hr')
-        td.appendChild(hr)
-        p = document.createElement('p')
-        p.innerText = 'ราคา : '
-        span = document.createElement('span')
-        span.className = 'item-' + i + '-price'
-        span.innerText = cart[i].amount * cart[i].price_incTopping
-        p.appendChild(span)
-        td.appendChild(p)
-        td.appendChild(document.createElement('hr'))
-        button = document.createElement('button')
-        button.className = 'btn btn-danger'
-        button.setAttribute("type", "button")
-        button.innerText = 'ลบรายการ'
-        button.onclick = function(){
-            cart.pop(input.dataset.pos)
-            cartList()
-        }
-        td.appendChild(button)
-        tr.appendChild(td)
-        tablecart.appendChild(tr)
-
-    }
-    calCartPrize()
-    reset()
-
-}
-
-function clearCart() {
-    document.querySelectorAll('.cartItem').forEach(el => el.remove());
-    total_cart_price = 0;
-    document.getElementById('ordered').style.display = 'none';
-    document.getElementById('unordered').style.display = '';
-}
-function openCart(){
-    document.getElementById('ordered').style.display = '';
-    document.getElementById('unordered').style.display = 'none';
 }
 
 function checkMT5(event) {
@@ -791,51 +667,11 @@ function selectFruitThis(event) {
     }
 }
 
-function changeDrinkPrice(price) {
-    priceAll = document.getElementsByClassName('DrinkPrice')
-    for (var i = 0; i < priceAll.length; i++) {
-        priceAll[i].innerText = price
-    }
-}
 
-function calCartPrize() {
-    total_cart_price = 0
-    for (var i = 0; i < cart.length; i++) {
-        total_cart_price += cart[i].amount * cart[i].price_incTopping
-    }
-    axios.post('api_promotion/', {
-        id: document.getElementById('promotion').value
-    }).then(function(response) {
-        total_cart_price = total_cart_price-response.data.discount*cart.length
-        document.getElementById('cartTotalPrice').innerText = total_cart_price
-    }).catch(function(error) {
-        console.log(error)
-    });
-    document.getElementById('cartTotalPrice').innerText = total_cart_price
-}
-
-function order() {
-    var order = {
-        cart: cart,
-        total_price: total_cart_price,
-        promotion:Number(document.getElementById('promotion').value),
-    }
-    clearCart()
-    reset()
-    cart = Array()
-    axios.post('api/', {
-        order: order
-    }).then(function(response) {
-        console.log(response)
-    }).catch(function(error) {
-        console.log(error)
-    });
-
-
-}
 $('#modal-coffee').on('hide.bs.modal', function(){
         reset();
     })
 </script>
+<script src="{% static 'js/script.js' %}"></script>
 
 {% endblock content %}

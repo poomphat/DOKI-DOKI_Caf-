@@ -26,14 +26,16 @@
                         </p>
                         <p class="text-secondary">วันที่ : {{queue.date.date}}</p>
                         <p class="text-secondary">เวลา : {{queue.time}}น.</p>
-                        <p class="text-success">ราคารวม : {{queue.total_price}}</p>
+                        <p class="text-success">ราคารวม : {{ queue.total_price|floatformat:2 }} </p>
                          {% if queue.promo_id.id > 0 %} 
                             <p class="text-warning">ใช้โปรโมชั่น : {{queue.promo_id.name}}</p>
                         {% endif %}
                         <button type='button' class='btn btn-primary' data-toggle="collapse"
                             href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false"
                             aria-controls="collapse{{ forloop.counter }}" style="margin-bottom: 1vh;">ดูรายละเอียด</button>
+                        {% ifequal user.groups.all.0.name 'Staff' %}
                         <a href="{% url 'order_success' queue.id %}"><button type='button' class='btn btn-warning' style="margin-bottom: 1vh;">เสร็จสิ้น</button></a>
+                        {% endifequal %}
                     </div>
                     <div class="collapse mb-3 col-12" id="collapse{{ forloop.counter }}">
                         <hr>
@@ -42,7 +44,7 @@
                             <div class="container-fluid" style="margin-bottom: 4vh;">
                                 <div class="row">
                                     <div class="titledrink col-3 queue_item"
-                                        style="margin-top: 1vh; background-image:url('../managements{{ item.picture.url }}');">
+                                        style="margin-top: 1vh; background-image:url('../managements{{ item.picture.url }}');" data-toggle="modal" data-target=".{{item.id}}-modal-lg">
                                     </div>
                                     <div class="col-6">
                                         <p class="text-primary">{{ forloop.counter }}). {{item.name}}</p>
@@ -67,10 +69,29 @@
                                         </ul>
                                         {% endif %}
                                         <p class="text-secondary">จำนวน : {{item.amount}}</p>
+                                        <div class="modal fade {{item.id}}-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">วิธีการทำ</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>{{ item.how_to_make|linebreaks }}</p> 
+                                                    </div>
+                                                        
+                                                    </div>
+                                            </div>
+                                            </div>
                                     </div>
                                 </div>
+                                
                             </div>
+                            
                             <hr>
+
                             {% endfor %}
                         </div>
                     </div>
@@ -85,6 +106,9 @@
     </div>
 </div>
 <style>
+    .modal-header {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+    }
     .titledrink {
         width: 100px;
         height: 220px;

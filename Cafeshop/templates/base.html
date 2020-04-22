@@ -21,12 +21,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css'%}">
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <!-- AIXOS -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <style>
         body {
             font-family: 'Kanit', sans-serif;
             color: rgb(31, 31, 31);
             background-image: url("{% static 'bg.jpg'%}");
             background-size: cover, contain;
+            background-attachment: fixed;
         }
 
         .bottoncolor {
@@ -83,6 +89,39 @@
             font-size: 1rem;
             width: 0%;
         }
+        .btnsideorder {
+            position: fixed;
+            right: 2%;
+            top: 1%;
+            width: 100px;
+            background-color: #ddd;
+            border: 3px solid #333;
+            transition: 0.2s ease;
+            height: 42px;
+        }
+
+        .btnsideorder:hover {
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            transform: scale(1.05, 1.05);
+        }
+        .order {
+            position: fixed;
+            height: 100%;
+            right: -100%;
+            top: 0px;
+            width: 100%;
+            background-color: #ddd;
+            box-shadow: -8px 0px 9px 0px rgba(0, 0, 0, 0.2);
+            overflow-x: hidden;
+            z-index: 1000;
+        }
+        #cart tr {
+            background-color: #fff;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        }
+        #cart tr:first-child {
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+        }
     </style>
 
 </head>
@@ -103,8 +142,9 @@
             <li>
                     <a href="{% url 'queue' %}">รายการคิว</a>
                 </li>
+                {% if user.groups.all.0.name == "Staff"  %}
                 <li>
-                    <a href="{% url 'report' 'day'%}">ประวัติการสั่งซื้อ</a>
+                    <a href="{% url 'report' 'day'%}">รายงานยอดขาย</a>
                 </li>
                 <li>
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false"
@@ -124,8 +164,9 @@
                         </li>
                     </ul>
                 </li>
+                {% endif %}
                 <li>
-                    <a>บัญชี</a>
+                    <a href="{% url 'user_info' %}">บัญชี</a>
                 </li>
 
 
@@ -147,6 +188,59 @@
             </ul>
 
         </nav>
+
+        <button class="btn btnsideorder" onclick='openorder();'>
+            <img style="height: 25px;" src="{% static 'shopping-cart-solid.svg' %}">
+        </button>
+<div class="col-xl-3 col-md-8 col-12 order" id="order">
+    <div style="height: 5vh;">
+        <h2 style="margin-top:1vh;">รายการที่สั่ง</h2>
+    </div>
+    <hr color="black">
+    <div class="list_order" id='unordered'>
+        <br>
+        <br>
+        <h3 class='text-center'>ไม่มีรายการที่สั่ง</h3>
+    </div>
+    <div class="list_order" id='ordered' style='display:none;'>
+        <table class='table' id='cart'>
+            <tr>
+                <th>#</th>
+                <th>รายละเอียด</th>
+            </tr>
+        </table>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <h3 class='pt-1' style='width:50vw;'>เลือกโปรโมชั่น : </h3>
+                <select name="promotion" id="promotion" class='custom-select' style='width:50%;' onchange='calCartPrize()'>
+                <option value="0"> ไม่เลือก </option>
+                {% for di in Promotion %}
+                    <option value="{{di.id}}"> {{di.name}}</option>
+                {% endfor %}
+                </select>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-8">
+                <h3>ราคาทั้งหมด : <span id='cartTotalPrice'></span> บาท</h3>
+            </div>
+            <div class='col-4'>
+                <button type='button' class='btn btn-success'
+                    style="float: right;position: relative;right: 0.75rem;" onclick='makeorder()'>สั่งซื้อ</button>
+            </div>
+        </div>
+        <hr>
+        <br>
+    </div>
+    <button class="btn btnsideorder" onclick='openorder();'>
+        <img style="height: 25px;" src="{% static 'shopping-cart-solid.svg' %}">
+    </button>
+    </tbody>
+    </table>
+    
+</div>
         
         <div class="container">
             {% block content %} {% endblock %}
@@ -168,9 +262,6 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js">
     </script>
-    <!-- AIXOS -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#sidebar").mCustomScrollbar({
@@ -187,7 +278,9 @@
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
         });
+    
     </script>
+    <script src="{% static 'js/script.js'%}"></script>
 </body>
 
 </html>

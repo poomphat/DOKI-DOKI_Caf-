@@ -2,10 +2,12 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option,Promotion
-from product.forms import UserForm,CustomerForm
+from product.forms import UserForm,CustomerForm,UserForm2
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
+from django.contrib.auth.models import Group
+from django.utils import timezone
 import json
 # Create your views here.
 
@@ -54,7 +56,7 @@ def register(request):
     registered = False
     if request.method == 'POST':
         user_form = UserForm(request.POST)
-        Customer_form = CustomerForm(request.POST)
+        Customer_form = CustomerForm(request.POST,request.FILES)
         if user_form.is_valid() and Customer_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)
@@ -62,7 +64,10 @@ def register(request):
             Customer = Customer_form.save(commit=False)
             Customer.user = user
             Customer.save()
+            group = Group.objects.get(name='Customer')
+            user.groups.add(group)
             registered = True
+            return redirect('login')
         else:
             print(user_form.errors,CustomerForm.errors)
     else:
@@ -75,38 +80,39 @@ def register(request):
     return render(request,'register.html', context)
 
 @login_required
-def account_manage(request, pk):
-    a = Customer.objects.get(id=pk)
-    user_form = CustomerForm(instance=a)
-    Customer_form = CustomerForm(instance=a)
+def account_manage(request):
     if request.method == 'POST':
-        user_form = UserForm(request.POST,request.FILES,instance=a)
-        Customer_form = CustomerForm(request.POST,request.FILES,instance=a)
-        if user_form.is_valid() and Customer_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password)
+        form = UserForm2(request.POST, request.FILES, instance=request.user)
+        Customer_form = CustomerForm(request.POST,request.FILES, instance=request.user.customer)
+        
+        if form.is_valid() and Customer_form.is_valid():
+            user = form.save()
             user.save()
             Customer = Customer_form.save(commit=False)
             Customer.user = user
             Customer.save()
+            group = Group.objects.get(name='Customer')
+            user.groups.add(group)
+
+            return redirect('user_info')
         else:
-            print(user_form.errors,CustomerForm.errors)
+            print(form.errors,CustomerForm.errors) 
     else:
-        user_form = UserForm()
-        Customer_form = CustomerForm()
-
-    context =  {'user_form':user_form,
-                'Customer_form':Customer_form,
-                'a':a}
-    return render(request,'register.html', context)
-
+        form = UserForm2(instance=request.user)
+        Customer_form = CustomerForm(instance=request.user.customer)
+                     
+    context={
+                'form':form,
+                'Customer_form':Customer_form
+                }
+    return render(request,'account_manage.html', context)
 
 @csrf_exempt
 def api(request):
     data = json.loads(request.body)
     order_data = data['order']
+    print(order_data, 'WHEN ORDER COME')
     order = Order()
-    print(request.user.id)
     if request.user.id != 1 :
         order.c_id = Customer.objects.get(user__id=request.user.id)#instance
         order.order_type = 'Online_buy'
@@ -166,6 +172,7 @@ def delete_WARRING_PLZ_DONT_USE_THIS(request):
     return render(request,'product/queue.html', context={})
 
 def queue(request):
+    print(timezone.now())
     orders = Order.objects.filter(finish_flag=False)
     queue = []
     sweetness_name = {
@@ -187,6 +194,7 @@ def queue(request):
                 'toppings':None,
                 'amount':order_list.amount,
                 'picture':Drink_info.objects.get(pk=order_list.d_id_id).picture,
+                'how_to_make':Drink_info.objects.get(pk=order_list.d_id_id).how_to_make,
                 'name':Drink_info.objects.get(pk=order_list.d_id_id).d_name
             }
             special = Special.objects.get(pk=order_list.special_id_id)

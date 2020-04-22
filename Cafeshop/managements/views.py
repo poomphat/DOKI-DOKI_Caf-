@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from product.forms import FruitForm,OptionForm,DrinkForm,PromotionForm,Promotion
-from product.models import Fruit,Drink_info,Option
+from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option,Promotion,User
 # Create your views here.
 @login_required
 def add_promotion(request):
@@ -174,3 +174,81 @@ def list_option(request):
         'option' : option
     }
     return render(request, 'managements/list_option.html', context)
+
+@login_required
+def user_info(request):
+
+    orders = Order.objects.filter(c_id = Customer.objects.get(user__id=request.user.id)).order_by('-date')
+    print(orders)
+    yourorders = []
+    sweetness_name = {
+    'normalsweet': 'หวานปกติ',
+    'lesssweet': 'หวานน้อย',
+    'moresweet': 'หวานมาก',
+    }
+    for order in orders:
+        order_lists = Order_list.objects.filter(order_id=order.id)
+        item_list = []
+        item = {}
+        for order_list in order_lists:
+            item = {
+                'id':order_list.d_id_id,
+                'order_id':order_list.order_id_id,
+                'unit_price':order_list.unit_price,
+                'sweetness':None,
+                'fruits':None,
+                'toppings':None,
+                'amount':order_list.amount,
+                'picture':Drink_info.objects.get(pk=order_list.d_id_id).picture,
+                'name':Drink_info.objects.get(pk=order_list.d_id_id).d_name
+            }
+            special = Special.objects.get(pk=order_list.special_id_id)
+            if special.special_type == 'Coffee':
+                coffee = Coffee_and_other.objects.get(pk=special.id)
+                item['sweetness'] = sweetness_name[coffee.sweetness]
+                toppings = coffee.options.all()
+                topping_items = []
+                for topping in toppings:
+                    co = Coffee_and_other_option.objects.get(Coffee_and_other=coffee, option=topping)
+                    topping_items.append({
+                        'name':topping.option_name,
+                        'amount':co.amount
+                    })
+                item['toppings'] = topping_items
+            elif special.special_type == 'Juice':
+                juice = Juice.objects.get(pk=special.id)
+                toppings = juice.options.all()
+                topping_items = []
+                for topping in toppings:
+                    jo = Juice_option.objects.get(juice=juice, option=topping)
+                    topping_items.append({
+                        'name':topping.option_name,
+                        'amount':jo.amount
+                    })
+                item['toppings'] = topping_items
+                fruits = juice.fruits.all()
+                fruit_items = []
+                for fruit in fruits:
+                    jf = Juice_fruit.objects.get(juice=juice, fruit=fruit)
+                    fruit_items.append({
+                        'name':fruit.fruit_name,
+                        'amount':jf.amount
+                    })
+                item['fruits'] = fruit_items
+            item_list.append(item)
+        order_list = {
+            'id':order.id,
+            'date':order.date,
+            'promo_id':order.promo_id,
+            'finish':order.finish_flag,
+            'items':item_list,
+            'time':order.date.strftime('%H:%M'),
+            'total_price':order.total_price,
+            'order_type':order.order_type,
+        }
+        yourorders.append(order_list)
+        print(yourorders)
+    context = {
+        'yourOrders':yourorders
+    }
+    return render(request, 'managements/profile_report.html', context=context)
