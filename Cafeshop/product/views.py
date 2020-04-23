@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth import update_session_auth_hash
 from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option,Promotion
 from product.forms import UserForm,CustomerForm,UserForm2
 from django.views.decorators.csrf import csrf_exempt
@@ -8,9 +9,10 @@ from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.contrib.auth.models import Group
 from django.utils import timezone
-import json
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
+import json, datetime
 # Create your views here.
-
 
 def mylogin(request):
     context = {}
@@ -40,15 +42,21 @@ def mylogout(request):
     
 @login_required
 def index(request):
-    promo = Promotion.objects.all()
-    drink_infos = Drink_info.objects.exclude(id=1)
-    options = Option.objects.all()
-    fruits = Fruit.objects.all()
+    promotions = Promotion.objects.all()
+    for promotion in promotions:
+        if promotion.e_date < datetime.date.today():
+            promotion.promo_status = False
+            promotion.save()
+    promotions = promotions.filter(promo_status = True)
+    drink_infos = Drink_info.objects.exclude(id=1).filter(useable_status=True)
+    print(drink_infos)
+    options = Option.objects.filter(useable_status=True)
+    fruits = Fruit.objects.filter(useable_status=True)
     context = {
         'drink_infos' : drink_infos,
         'options' : options,
         'fruits' : fruits,
-        'Promotion' : promo,
+        'Promotion' : promotions,
     }
     return render(request, 'product/index.html', context=context)
 
@@ -67,12 +75,13 @@ def register(request):
             group = Group.objects.get(name='Customer')
             user.groups.add(group)
             registered = True
-            return redirect('login')
+            #return redirect('login')
         else:
             print(user_form.errors,CustomerForm.errors)
     else:
-        user_form = UserForm()
         Customer_form = CustomerForm()
+        user_form = UserForm()
+        
 
     context =  {'user_form':user_form,
                 'Customer_form':Customer_form,
@@ -82,8 +91,8 @@ def register(request):
 @login_required
 def account_manage(request):
     if request.method == 'POST':
-        form = UserForm2(request.POST, request.FILES, instance=request.user)
-        Customer_form = CustomerForm(request.POST,request.FILES, instance=request.user.customer)
+        form = UserForm2(request.POST, instance=request.user)
+        Customer_form = CustomerForm(request.POST, request.FILES, instance=request.user.customer)
         
         if form.is_valid() and Customer_form.is_valid():
             user = form.save()
@@ -106,6 +115,24 @@ def account_manage(request):
                 'Customer_form':Customer_form
                 }
     return render(request,'account_manage.html', context)
+
+@login_required
+def password_reset(request):
+    repass = False
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            repass = True
+    else:
+        form = PasswordChangeForm(user=request.user)
+    context = {
+        'form':form,
+        'repass':repass
+    }
+    return render(request, 'password_reset.html', context)
+
 
 @csrf_exempt
 def api(request):
@@ -165,12 +192,7 @@ def api(request):
         #order.save()
     return JsonResponse(order_data, status=200)
 
-def delete_WARRING_PLZ_DONT_USE_THIS(request):
-    a = Special.objects.all()
-    for x in a:
-        x.delete()
-    return render(request,'product/queue.html', context={})
-
+@login_required
 def queue(request):
     print(timezone.now())
     orders = Order.objects.filter(finish_flag=False)
@@ -253,7 +275,8 @@ def queue(request):
         'queues':queue
     }
     return render(request,'product/queue.html', context=context)
-
+    
+@login_required    
 def order_success(request, id):
     order = Order.objects.get(pk=id)
     order.finish_flag = True
@@ -263,9 +286,9 @@ def order_success(request, id):
 @csrf_exempt
 def api_drink(request):
     data = {}   
-    drink_infos = Drink_info.objects.exclude(id=1)
+    drink_infos = Drink_info.objects.exclude(id=1).filter(useable_status=True)
     if request.method == 'GET':
-        data = serializers.serialize("json", drink_infos) #กูจะเปลี่ยนสีเว็บใหม่ เอาไหม หรืออันเดิมดีเเล้ววว ไหนธีมมึง ซ้าสสส กูต่อVPNยังไม่ได้เลย ต่อไมวะ
+        data = serializers.serialize("json", drink_infos)
     return HttpResponse(data, status=200)
 
 @csrf_exempt
@@ -285,7 +308,7 @@ def api_promotion(request):
 @csrf_exempt
 def api_option(request):
     data = {}   
-    options = Option.objects.all()
+    options = Option.objects.filter(useable_status=True)
     if request.method == 'GET':
         data = serializers.serialize("json", options)
     return HttpResponse(data, status=200)

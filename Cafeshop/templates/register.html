@@ -11,6 +11,7 @@
      <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
      <link rel="stylesheet" type="text/css" href="{% static 'css/style3.css'%}">
      <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css'%}">
+    <script src="{% static 'jquery-3.3.1.min.js'%}"></script>
 
      <!-- Bootstrap CSS CDN -->
      <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
@@ -26,31 +27,49 @@
 
 
      <div class="container col-11 col-lg-6" style="margin-bottom: 10vh;">
-         <div class="col-12">
+         <div class="col-12 ">
             
             {% if registered %}
-                <h1>Thank you for registering!</h1>
+                        <script>
+                                function wait(){
+                                var timer = setTimeout(function() {
+                                    window.location='/login/'
+                                }, 5000);
+                                }
+                            document.getElementById("wait").innerHTML = wait(); 
+                        </script>
 
-            {% else %}
+                <h1  id="wait">Thank you for registering!</h1>
+                    <h3>Please wait, you are redirecting to the login page.</h3>      
+
+            {% else %}  
+                                              
                         <h1>Register Here</h1>
                         <form method="POST" action="{% url 'register' %}" enctype="multipart/form-data">
 
                         {% csrf_token %}
                         <div class="regis">
+                        <div class="titlepro col-11 center" id="objectID"></div>
+                            <div class="form-group">
+                                {{Customer_form.picture.errors}}
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                {{Customer_form.picture }}
+                            </div>
+                            
                             {% for field in user_form %}
                             <div class="form-group">
-                                {{field.errors}}
+                                
                                 <label for="{{field.id_for_label}}">{{field.label}}</label>
                                 {{field}}
+                                {{field.errors}}
                             </div>
                             {% endfor %}
-                            {% for field in Customer_form %}
                             <div class="form-group">
-                                {{field.errors}}
-                                <label for="{{field.id_for_label}}">{{field.label}}</label>
-                                {{field}}
+                                
+                                <label for="{{field.id_for_label}}">{{Customer_form.address.label}}</label>
+                                {{Customer_form.address}}
+                                {{Customer_form.address.errors}}
                             </div>
-                            {% endfor %}
                         </div>
                         <button type="submit" class="btn bottoncolor col">Register</button>
                         </form>
@@ -71,12 +90,26 @@
          -webkit-background-clip: text;
          -webkit-text-fill-color: transparent;
      }
-
+    #objectID{
+        width: 0px;
+        height: 0px;
+        text-align: center;
+        border-radius: 15px;
+        background-size: cover;
+        transition: 0.15s ease;
+        background-color: #fff;
+        background-position: center;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        margin-bottom: 1vh;
+    }
+    #objectID:hover{
+        transform: scale(1.05,1.05);
+    }
      .container {
          color: rgb(82, 82, 82);
          margin-top: 15vh;
          background-color: rgba(233, 233, 233, 0.9);
-         padding: 60px;
+         padding: 20px;
          border-radius: 10px;
          box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
      }
@@ -102,7 +135,10 @@
          transition: 0.25s ease;
          width: 100%;
      }
-
+    .errorlist{
+        color:red;
+        margin-top: 0.5vh;
+    }
      .bottoncolor:hover,
      .bottoncolor2:hover {
          transform: scale(1.1, 1.1);
@@ -112,6 +148,7 @@
          font-family: 'Kanit', sans-serif;
          background-image: url("{% static 'bg.jpg'%}");
          background-size: cover, contain;
+         background-attachment: fixed;
      }
 
      html {
@@ -120,20 +157,23 @@
 
      .regis {
          overflow: auto;
-         height: 40vh;
+         height: 55vh;
      }
  </style>
 <script>
-var count = 4;
-function countie() {
-    if (count > 0) {
-        console.log(count);
-        count--;
-        setTimeout(countie, 700);
+
+    function readURL(input) { 
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#objectID').css('background-image', ' url('+e.target.result +')');
+                $('#objectID').css('width', '200px');
+                $('#objectID').css('height', '150px');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
     }
-    else {
-        alert('hi')
-    }
-}
 </script>
  </html>

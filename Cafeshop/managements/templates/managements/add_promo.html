@@ -14,9 +14,9 @@
         {{ form.non_field_errors }}
         {% for field in form %}
         <div class="form-group">
-            {{field.errors}}
             <label for="{{field.id_for_label}}">{{field.label}}</label>
             {{field}}
+            {{field.errors}}
         </div>
         {% endfor %}
         <button class="btn col bottoncolor5" type="submit">บันทึกข้อมูล</button>
@@ -53,6 +53,10 @@
 
     .bottoncolor5:hover {
         transform: scale(1.07, 1.07);
+    }
+    .errorlist{
+        color:red;
+        margin-top: 0.5vh;
     }
 </style>
 <script>

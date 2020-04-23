@@ -11,6 +11,7 @@
      <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
      <link rel="stylesheet" type="text/css" href="{% static 'css/style3.css'%}">
      <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css'%}">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
      <!-- Bootstrap CSS CDN -->
      <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
@@ -32,6 +33,13 @@
 
                         {% csrf_token %}
                         <div class="regis">
+                            <div class="titlepro col-11 center" id="objectID"></div>
+                                <div class="form-group">
+                                    {{Customer_form.picture.errors}}
+                                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                    {{Customer_form.picture }}
+                                </div>
+
                             {% for field in form %}
                                 {% if forloop.counter > 1 %}
                                     <div class="form-group">
@@ -41,20 +49,18 @@
                                     </div>
                                 {% else %}
                                     <div class="form-group">
-                                        {{field.errors}}
                                         <label for="{{field.id_for_label}}">{{field.label.as_hidden}}</label>
                                         {{field.as_hidden}}
                                     </div>
                                 {% endif %}   
                             {% endfor %}
-                            {% for field in Customer_form %}
-                                    <div class="form-group">
-                                        {{field.errors}}
-                                        <label for="{{field.id_for_label}}">{{field.label}}</label>
-                                        {{field}}
-                                </div>
-                            {% endfor %}
+                            <div class="form-group">
+                                {{Customer_form.address.errors}}
+                                <label for="{{field.id_for_label}}">{{field.label}}</label>
+                                {{Customer_form.address}}
+                            </div>
                         </div>
+                        <button type="submit" class="btn bottoncolor col">Change data</button>
                     </form>
                     
          </div>
@@ -64,6 +70,7 @@
  </body>
 
  <style>
+
      h2 {
          font-size: 3em;
          text-transform: uppercase;
@@ -71,6 +78,29 @@
          background: linear-gradient(to right, #ff9966, #ff5e62);
          -webkit-background-clip: text;
          -webkit-text-fill-color: transparent;
+     }
+    #objectID {
+        width: 200px;
+        height: 150px;
+        text-align: center;
+        border-radius: 15px;
+        background-size: cover;
+        background-color: #fff;
+        background-image: url('/managements{{ user.customer.picture.url }}');
+        transition: 0.15s ease;
+        background-position: center;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+    }
+    #objectID:hover{ 
+        transform: scale(1.05,1.05);
+    }
+     .container {
+         color: rgb(82, 82, 82);
+         margin-top: 15vh;
+         background-color: rgba(233, 233, 233, 0.9);
+         padding: 20px;
+         border-radius: 10px;
+         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
      }
 
      .container {
@@ -124,5 +154,18 @@
          height: 40vh;
      }
  </style>
+<script>
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#objectID').css('background-image', ' url('+e.target.result +')');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    } 
+</script>
 
  </html>

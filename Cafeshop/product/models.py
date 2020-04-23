@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 
 class Customer(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE,default="")
     picture = models.ImageField(default='customer/default.png',upload_to='customer/',null=True,blank=True)
+    user = models.OneToOneField(User,on_delete=models.CASCADE,default="")
     address = models.TextField()
 
 class Promotion(models.Model):

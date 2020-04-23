@@ -29,4 +29,5 @@ urlpatterns = [
     path('queue/', views.queue, name='queue'),
     path('order_success/<int:id>/', views.order_success, name='order_success'),
     path('account_manage/',views.account_manage, name='account_manage'),
+    path('password_reset/',views.password_reset, name='password_reset'),
 ]

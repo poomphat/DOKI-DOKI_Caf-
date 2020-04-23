@@ -4,25 +4,29 @@
 <div class="container listall">
     <div class="col-12 list_r">
         <div class="row">
-        <div class="col-12">
-            <label class="titlelist col-lg-8 col-6">ยอดขาย</label></div>
-                <div class="col-3">
-                    <a href="{% url 'report' 'day' %}"><button type='button' class='btn btn-primary btncool col'>รายวัน</button></a>
-                </div>
-                <div class="col-3">
-                    <a href="{% url 'report' 'week' %}"><button type='button' class='btn btn-primary btncool col'>รายสัปดาห์</button></a>
-                </div>
-                <div class="col-3">
-                    <a href="{% url 'report' 'month' %}"><button type='button' class='btn btn-primary btncool col'>รายเดือน</button></a>
-                </div>
-                <div class="col-3">
-                    <a href="{% url 'report' 'year' %}"><button type='button' class='btn btn-primary btncool col'>รายปี</button></a>
-                </div>
+            <div class="col-12">
+                <label class="titlelist col-lg-8 col-6">ยอดขาย</label></div>
+            <div class="col-3">
+                <a href="{% url 'report' 'day' %}"><button type='button'
+                        class='btn btn-primary btncool col'>รายวัน</button></a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'report' 'week' %}"><button type='button'
+                        class='btn btn-primary btncool col'>รายสัปดาห์</button></a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'report' 'month' %}"><button type='button'
+                        class='btn btn-primary btncool col'>รายเดือน</button></a>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'report' 'year' %}"><button type='button'
+                        class='btn btn-primary btncool col'>รายปี</button></a>
+            </div>
         </div>
         <hr>
         <div class="alltable">
             <div class="listbody">
-                <table class='table' id='myTable'>
+                <table class='table table-hover' id='myTable'>
                     <thead class="thead-custom">
                         <tr>
                             <th>{{type}}</th>
@@ -32,43 +36,66 @@
                     </thead>
                     <tbody>
                         {% for order in orders %}
-                            <tr>
-                                <td data-order='{{ forloop.counter }}'>
-                                    {% if type == 'year' %}
-                                        {{order.time.year}}
-                                    {% elif type == 'month' %}
-                                        {{order.time.month}}/{{order.time.year}}
-                                    {% elif type == 'day' %}
-                                        {{order.time.date}}
-                                    {% elif type == 'week' %}
-                                        {{order.week}}/{{order.time.year}}</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ order.count}}
-                                </td>
-                                <td>
-                                    {{ order.total_income}}
-                                </td>
-                            </tr>
+                        <tr onclick='getOrderAtTime(event)' data-type='{{type}}'
+                        {% if type == 'day' %} data-time="{{order.time.date}}" {% endif %}
+                        {% if type == 'week' %} data-time='{{order.week}}'{% endif %}
+                        {% if type == 'month' %} data-time='{{order.time.month}}'{% endif %} 
+                        {% if type == 'year' %} data-time='{{order.time.year}}'{% endif %}  
+                        id='order-line'>
+                            <td data-order='{{ forloop.counter }}' >
+                                {% if type == 'year' %}
+                                {{order.time.year}}
+                                {% elif type == 'month' %}
+                                {{order.time.month}}/{{order.time.year}}
+                                {% elif type == 'day' %}
+                                {{order.time.date}}
+                                {% elif type == 'week' %}
+                                {{order.week}}/{{order.time.year}}</span>
+                                {% endif %}
+                            </td>
+                            <td >
+                                {{ order.count}}
+                            </td>
+                            <td >
+                                {{ order.total_income}}
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-
+        <div class="modal fade orderList" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">รายการออเดอร์ที่สั่ง</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id='orderList-body'>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
-    $(document).ready( function () {
-    $('#myTable').DataTable();
-} );
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
 </script>
 <style>
-    .btncool{
+    .btncool {
         margin-right: 1vw;
         margin-bottom: 1vw;
         font-size: 18px;
+    }
+    .modal-header {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
     }
     .titledrink {
         width: 100px;
@@ -78,9 +105,9 @@
         line-height: 220px;
         border-radius: 20px;
         margin-left: 1vw;
-         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     }
-    
+
 
     p {
         font-size: 20px;
@@ -132,16 +159,18 @@
         overflow-x: hidden;
     }
 
-     @media only screen and (max-width: 800px) {
-         .btncool{
-             font-size: 14px;
-         }
-     }
-     @media only screen and (max-width: 500px) {
-         .btncool{
-             font-size: 10px;
-         }
-     }
+    @media only screen and (max-width: 800px) {
+        .btncool {
+            font-size: 14px;
+        }
+    }
+
+    @media only screen and (max-width: 500px) {
+        .btncool {
+            font-size: 10px;
+        }
+    }
+
     @media only screen and (max-width: 500px) {
 
         .table,
@@ -150,12 +179,13 @@
         .list button {
             font-size: 14px;
         }
+
         .titledrink {
             width: 100px;
             height: 100px;
             line-height: 100px;
         }
-    
+
 
         .list_r label {
             font-size: 18px;
@@ -204,14 +234,73 @@
         margin-top: 10vh;
     }
 </style>
-    <script>
-        $(document).ready(function () {
-                            $(".list_r").animate({
-                                        'top': '0vh',
-                                        'opacity': 1
-                                        },500, function() {
-                                });
-                    
-                });
-        </script>
+<script>
+    $(document).ready(function () {
+        $(".list_r").animate({
+            'top': '0vh',
+            'opacity': 1
+        }, 500, function () {
+        });
+
+    });
+    function getOrderAtTime(event){
+        var line = event.target.parentNode.dataset
+        var type = line.type
+        var get = Object
+        get = {
+                type:type,
+                time:line.time,
+            }
+        axios.post('api-report-order/', {
+            get:get
+        }).then(function(response) {
+            body = document.getElementById('orderList-body')
+            div = document.createElement('div')
+            div.setAttribute('id', 'forTable')
+            table = document.createElement('table')
+            table.className = 'table'
+            table.setAttribute('id', 'orderList-table')
+            thead = document.createElement('thead')
+            tr = document.createElement('tr')
+            th = document.createElement('th')
+            th.innerText = 'หมายเลขออเดอร์'
+            tr.appendChild(th)
+            th = document.createElement('th')
+            th.innerText = 'ชื่อเครื่องดื่ม'
+            tr.appendChild(th)
+            th = document.createElement('th')
+            th.innerText = 'จำนวน'
+            tr.appendChild(th)
+            thead.appendChild(tr)
+            table.appendChild(thead)
+            tbody = document.createElement('tbody')
+            data = response.data
+            for(var i =0; i<data.length;i++){
+                tr = document.createElement('tr')
+                td = document.createElement('td')
+                td.innerText = data[i].order_id
+                tr.appendChild(td)
+                td = document.createElement('td')
+                td.innerHTML = data[i].drink+' <span class="text-success">('+data[i].type+')</span>'
+                tr.appendChild(td)
+                td = document.createElement('td')
+                td.innerText = data[i].amount
+                tr.appendChild(td)
+                tbody.appendChild(tr)
+            }
+            table.appendChild(tbody)
+            div.appendChild(table)
+            body.appendChild(div)
+            
+            $('#orderList-table').DataTable();
+            $('.orderList').modal('toggle')
+            console.log(response)
+        }).catch(function(error) {
+            console.log(error)
+        });
+        }
+    $('.orderList').on('hide.bs.modal', function(){
+        document.getElementById('forTable').remove()
+    })
+</script>
 {% endblock content %}

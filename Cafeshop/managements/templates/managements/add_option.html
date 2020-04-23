@@ -12,11 +12,12 @@
     <form method="POST" action="{% url 'add_option' %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.non_field_errors }}
+        <div class="titlepro col-11 center" id="objectID"></div>
         {% for field in form %}
         <div class="form-group">
-            {{field.errors}}
             <label for="{{field.id_for_label}}">{{field.label}}</label>
             {{field}}
+            {{field.errors}}
         </div>
         {% endfor %}
         <button class="btn col bottoncolor5" type="submit">บันทึกข้อมูล</button>
@@ -54,6 +55,25 @@
     .bottoncolor5:hover {
         transform: scale(1.07, 1.07);
     }
+    .errorlist{
+        color:red;
+        margin-top: 0.5vh;
+    }
+    #objectID{
+        width: 200px;
+        height: 150px;
+        text-align: center;
+        border-radius: 10px;
+        background-size: cover;
+        background-color: #fff;
+        transition: 0.15s ease;
+        background-position: center;
+        box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
+        margin-bottom: 1vh;
+    }
+    #objectID:hover{
+        transform: scale(1.05,1.05);
+    }
 </style>
 <script>
         $(document).ready(function () {
@@ -64,6 +84,17 @@
                                 });
                     
                 });
+    function readURL(input) { 
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#objectID').css('background-image', ' url('+e.target.result +')');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
         </script>
 
 {% endblock content %}

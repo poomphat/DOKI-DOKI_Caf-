@@ -32,18 +32,19 @@
 
                         {% csrf_token %}
                         <div class="regis">
+                        {{user_form.errors}}
                             {% for field in user_form %}
                             <div class="form-group">
-                                {{field.errors}}
                                 <label for="{{field.id_for_label}}">{{field.label}}</label>
                                 {{field}}
+                                {{field.errors}}
                             </div>
                             {% endfor %}
                             {% for field in Customer_form %}
                             <div class="form-group">
-                                {{field.errors}}
                                 <label for="{{field.id_for_label}}">{{field.label}}</label>
                                 {{field}}
+                                {{field.errors}}
                             </div>
                             {% endfor %}
                         </div>

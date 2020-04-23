@@ -1,9 +1,11 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,permission_required
 from product.forms import FruitForm,OptionForm,DrinkForm,PromotionForm,Promotion
 from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option,Promotion,User
 # Create your views here.
+
+@permission_required('product.add_permission')
 @login_required
 def add_promotion(request):
     if request.method == 'POST':
@@ -19,12 +21,15 @@ def add_promotion(request):
     })
 
 
+@permission_required('product.delete_promotion')
 @login_required
 def delete_promotion(request, pk):
     p = Promotion.objects.get(id=pk)
-    p.delete()
+    p.promo_status == False
+    p.save()
     return  redirect('index')
 
+@permission_required('product.change_promotion')
 @login_required
 def edit_promotion(request, pk):
     p = Promotion.objects.get(id=pk)
@@ -40,13 +45,14 @@ def edit_promotion(request, pk):
     }
     return render(request, 'managements/add_promo.html', context) 
 
+@permission_required('product.add_fruit')
 @login_required
 def add_fruit(request):
     if request.method == 'POST':
         form = FruitForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('list_fruit')
+            return redirect('list_fruit', 'True')
     else:
         form = FruitForm()
     
@@ -54,6 +60,7 @@ def add_fruit(request):
         'form': form
     })
 
+@permission_required('product.change_fruit')
 @login_required
 def edit_fruit(request, pk):
     f = Fruit.objects.get(id=pk)
@@ -62,26 +69,34 @@ def edit_fruit(request, pk):
         form = FruitForm(request.POST,request.FILES,instance=f)
         if form.is_valid():
             form.save()
-            return redirect('list_fruit')
+            return redirect('list_fruit', 'True')
     context={
         'form': form,
         'f':f,
     }
     return render(request, 'managements/add_fruit.html', context) 
 
+@permission_required('product.delete_fruit')
 @login_required
 def delete_fruit(request, pk):
     f = Fruit.objects.get(id=pk)
-    f.delete()
-    return  redirect('list_fruit')
+    if f.useable_status:
+        f.useable_status = False
+        f.save()
+        return redirect('list_fruit', status='True')
+    else:
+        f.useable_status = True
+        f.save()
+        return redirect('list_fruit', status='False')
 
+@permission_required('product.add_option')
 @login_required
 def add_option(request):
     if request.method == 'POST':
         form = OptionForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('list_option')
+            return redirect('list_option', 'True')
     else:
         form = OptionForm()
     
@@ -89,6 +104,7 @@ def add_option(request):
         'form': form
     })
 
+@permission_required('product.change_option')
 @login_required
 def edit_option(request, pk):
     o = Option.objects.get(id=pk)
@@ -97,26 +113,35 @@ def edit_option(request, pk):
         form = OptionForm(request.POST,request.FILES,instance=o)
         if form.is_valid():
             form.save()
-            return redirect('list_option')
+            return redirect('list_option', 'True')
     context={
         'form': form,
         'o':o,
     }
     return render(request, 'managements/add_option.html', context)
 
+
 @login_required
+@permission_required('product.delete_option')
 def delete_option(request, pk):
     o = Option.objects.get(id=pk)
-    o.delete()
-    return redirect('list_option')
+    if o.useable_status:
+        o.useable_status = False
+        o.save()
+        return redirect('list_option', status='True')
+    else:
+        o.useable_status = True
+        o.save()
+        return redirect('list_option', status='False')
 
+@permission_required('product.add_drink_info')
 @login_required
 def add_drink(request):
     if request.method == 'POST':
         form = DrinkForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('list_drink')
+            return redirect('list_drink', 'True')
     else:
         form = DrinkForm()
     
@@ -124,6 +149,7 @@ def add_drink(request):
         'form': form
     })
 
+@permission_required('product.change_drink_info')
 @login_required
 def edit_drink(request, pk):
     d = Drink_info.objects.get(id=pk)
@@ -132,54 +158,77 @@ def edit_drink(request, pk):
         form = DrinkForm(request.POST,request.FILES,instance=d)
         if form.is_valid():
             form.save()
-            return redirect('list_drink')
+            return redirect('list_drink', 'True')
     context={
         'form': form,
         'd':d,
     }
     return render(request, 'managements/add_drink.html', context) 
 
+@permission_required('product.delete_drink_info')
 @login_required
 def delete_drink(request, pk):
     d = Drink_info.objects.get(id=pk)
-    d.delete()
-    return redirect('list_drink')
+    if d.useable_status:
+        d.useable_status = False
+        d.save()
+        return redirect('list_drink', status='True')
+    else:
+        d.useable_status = True
+        d.save()
+        return redirect('list_drink', status='False')
 
+@permission_required('product.view_drink_info')
 @login_required
-def list_drink(request):
+def list_drink(request, status):
     drink_info = Drink_info.objects.all()
+    if status == 'True':
+        drink_info = drink_info.filter(useable_status=True)
+    else:
+        drink_info = drink_info.filter(useable_status=False)
     search = request.GET.get('search','')
-    drink_info = Drink_info.objects.filter(d_name__icontains=search)
+    drink_info = drink_info.filter(d_name__icontains=search)
     context = {
-        'drink_info' : drink_info
+        'drink_info' : drink_info,
+        'status' : status
     }
     return render(request, 'managements/list_drink.html', context)
-
+@permission_required('product.view_fruit')
 @login_required
-def list_fruit(request):
+def list_fruit(request, status):
     fruit = Fruit.objects.all()
+    if status == 'True':
+        fruit = fruit.filter(useable_status=True)
+    else:
+        fruit = fruit.filter(useable_status=False)
     search = request.GET.get('search','')
-    fruit = Fruit.objects.filter(fruit_name__icontains=search)
+    fruit = fruit.filter(fruit_name__icontains=search)
     context = {
-        'fruit' : fruit
+        'fruit' : fruit,
+        'status' : status
     }
     return render(request, 'managements/list_fruit.html', context)
-    
+
+@permission_required('product.view_option')
 @login_required
-def list_option(request):
+def list_option(request, status):
     option = Option.objects.all()
+    if status == 'True':
+        option = option.filter(useable_status=True)
+    else:
+        option = option.filter(useable_status=False)
     search = request.GET.get('search','')
-    option = Option.objects.filter(option_name__icontains=search)
+    option = option.filter(option_name__icontains=search)
     context = {
-        'option' : option
+        'option' : option,
+        'status' : status
     }
     return render(request, 'managements/list_option.html', context)
 
 @login_required
 def user_info(request):
 
-    orders = Order.objects.filter(c_id = Customer.objects.get(user__id=request.user.id)).order_by('-date')
-    print(orders)
+    orders = Order.objects.filter(c_id = Customer.objects.get(user__id=request.user.id), finish_flag=True).order_by('-date')
     yourorders = []
     sweetness_name = {
     'normalsweet': 'หวานปกติ',
@@ -247,7 +296,6 @@ def user_info(request):
             'order_type':order.order_type,
         }
         yourorders.append(order_list)
-        print(yourorders)
     context = {
         'yourOrders':yourorders
     }

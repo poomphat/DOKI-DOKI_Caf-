@@ -14,24 +14,19 @@ function openorder() {
 total_price = 0
 
 function cartList() {
-    Cookies.set('order', JSON.stringify(order))
     clearCart()
-    console.log(order)
     var cart = []
     if (Cookies.get('cart') !== undefined) {
         cart = JSON.parse(Cookies.get('cart'))
     }
-    if (cart.length > 0) {
-        document.getElementById('ordered').style.display = '';
-        document.getElementById('unordered').style.display = 'none';
-    }
-    tablecart = document.getElementById('cart') //hehe boi
+    tablecart = document.getElementById('cart')
     if (cart.length > 0) {
         openCart()
     }
     for (var i = 0; i < cart.length; i++) {
         tr = document.createElement('tr')
         tr.className = 'cartItem'
+        tr.dataset.pos = i
         td = document.createElement('td')
         td.innerText = i + 1
         tr.appendChild(td)
@@ -84,12 +79,14 @@ function cartList() {
         input = document.createElement('input')
         input.setAttribute("type", "number");
         input.setAttribute("min", "1");
-        input.className = 'item-' + i + '-amount'
+        input.setAttribute("id", 'item-' + i + '-amount')
         input.dataset.pos = i
         input.value = cart[i].amount
         input.style.width = '10vw'
-        input.oninput = function() {
-            cart[input.dataset.pos].amount = input.value
+        input.oninput = function(event) {
+            pos = Number(event.target.dataset.pos)
+            cart[pos].amount = event.target.value
+            Cookies.set('cart', JSON.stringify(cart))
             calCartPrize()
         }
         input.onkeyup = function() {
@@ -103,7 +100,7 @@ function cartList() {
         p.innerText = 'ราคา : '
         span = document.createElement('span')
         span.className = 'item-' + i + '-price'
-        span.innerText = cart[i].amount * cart[i].price_incTopping
+        span.innerText = cart[i].price_incTopping
         p.appendChild(span)
         td.appendChild(p)
         td.appendChild(document.createElement('hr'))
@@ -111,9 +108,9 @@ function cartList() {
         button.className = 'btn btn-danger'
         button.setAttribute("type", "button")
         button.innerText = 'ลบรายการ'
-        button.onclick = function() {
-            var x = input.dataset.pos
-            cart.pop(x)
+        button.dataset.pos = i
+        button.onclick = function(event) {
+            cart.splice(event.target.dataset.pos, 1)
             Cookies.set('cart', JSON.stringify(cart))
             cartList()
         }
@@ -122,9 +119,7 @@ function cartList() {
         tablecart.appendChild(tr)
 
     }
-
     calCartPrize()
-    console.log(order)
 }
 
 function clearCart() {
@@ -159,7 +154,9 @@ function calCartPrize() {
     axios.post('/api_promotion/', {
         id: document.getElementById('promotion').value
     }).then(function(response) {
-        total_cart_price = total_cart_price - response.data.discount * cart.length
+        for(var i=0;i<cart.length;i++){
+            total_cart_price = total_cart_price - (response.data.discount * cart[i].amount)
+        }
         document.getElementById('cartTotalPrice').innerText = total_cart_price
         total_price = total_cart_price
             //console.log(response)
@@ -188,7 +185,7 @@ function makeorder() {
     }).catch(function(error) {
         console.log(error)
     });
-    console.log(x)
+
     clearCart()
     cart = Array()
 

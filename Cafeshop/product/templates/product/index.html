@@ -68,7 +68,7 @@
                             <div class="col-4"><button type='button' class='btn btn-secondary Hot col' onclick='addMenu("Hot")'>ร้อน</button></div>
                             <div class="col-4"><button type='button' class='btn btn-secondary Iced col' onclick='addMenu("Iced")'>เย็น</button></div>
                             <div class="col-4"><button type='button' class='btn btn-secondary Frappe col' onclick='addMenu("Frappe")'>ปั่น</button></div>
-                            <h4 class='text-warning' id='nonDrinkAddtoCard' style='display:none;'>***** กรุณาเลือกเครื่องดื่ม *****</h4>
+                            <h4 class='text-warning' id='nonDrinkAddtoCard' style='display:none;margin-top: 3vh;'>***** กรุณาเลือกเครื่องดื่ม *****</h4>
                         </div>
                         <hr>
                         </div>
@@ -523,6 +523,10 @@ function deleteAllTopping() {
 }
 
 function addToCart() {
+    var cart = Array()
+    if (Cookies.get('cart') !== undefined) {
+        cart = JSON.parse(Cookies.get('cart'))
+    }
     if (!drink_id == '') {
         addtoppingElement = document.querySelectorAll('.addTopping')
         var temp_price = 0
@@ -560,11 +564,12 @@ function addToCart() {
         $('.bd-example-modal-xl-smoothie').modal('hide')
         reset()
         cartList()
-        document.getElementById('nonDrinkAddtoCard').style.display = '';
+        //document.getElementById('nonDrinkAddtoCard').style.display = '';
 
     } else {
+        console.log(drink_kind)
         if(drink_kind == 'coffee'){
-        document.getElementById('nonDrinkAddtoCard').style.display = 'inline';
+        //document.getElementById('nonDrinkAddtoCard').style.display = 'inline';
         }
     }
 
@@ -593,6 +598,7 @@ function selectThis(event) {
     sweet_select = document.getElementsByClassName('sweetness')[0]
     sweetness = sweet_select.options[sweet_select.selectedIndex].value
     changeDrinkPrice(drink_price)
+    recalDrinkPrice()
     clearallcoffee()
     event.target.style.border  = "10px solid #44D362";
     event.target.style.color = "white";
