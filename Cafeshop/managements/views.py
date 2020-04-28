@@ -5,7 +5,7 @@ from product.forms import FruitForm,OptionForm,DrinkForm,PromotionForm,Promotion
 from product.models import Fruit, Drink_info,Customer,Option,Promotion,Order,Order_list,Special,Juice,Fruit,Juice_fruit,Coffee_and_other,Option,Juice_option,Coffee_and_other_option,Promotion,User
 # Create your views here.
 
-@permission_required('product.add_permission')
+@permission_required('product.add_promotion')
 @login_required
 def add_promotion(request):
     if request.method == 'POST':
