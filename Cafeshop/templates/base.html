@@ -13,7 +13,7 @@
     </script>
     <script defer src="{% static 'js/fontawesome.js'%}">
     </script>
-    <!-- Font-API -->>
+    <!-- Font-API -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
     <!-- dataTables css -->
     <link rel="stylesheet" href="{% static 'css/jquery.dataTables.min.css'%}">
@@ -45,6 +45,23 @@
             text-align: center;
             width: 80%;
         }
+        table.table-bordered { 
+        border: 1px solid transparent;
+        margin-top: 20px;
+    }
+
+    table.table-bordered>thead>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered>tbody>tr>td { 
+        border: 1px solid transparent;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0 1vh;
+    }
         html{
             height: 100vh;
         }

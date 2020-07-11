@@ -157,9 +157,13 @@ function calCartPrize() {
         for(var i=0;i<cart.length;i++){
             total_cart_price = total_cart_price - (response.data.discount * cart[i].amount)
         }
+        //console.log(total_cart_price)
+        if(Number(total_cart_price)<0){
+            total_cart_price = 0
+        }
         document.getElementById('cartTotalPrice').innerText = total_cart_price
         total_price = total_cart_price
-            //console.log(response)
+        console.log(response)
     }).catch(function(error) {
         console.log(error)
     });

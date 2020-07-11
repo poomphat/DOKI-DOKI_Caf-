@@ -17,8 +17,6 @@ class Promotion(models.Model):
     discount = models.IntegerField(default=0)
     promo_status = models.BooleanField(default=True)
  
-class Staff(models.Model):
-    st_name = models.CharField(max_length=255)
 
 class Order(models.Model):
     

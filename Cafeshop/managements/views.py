@@ -168,15 +168,18 @@ def edit_drink(request, pk):
 @permission_required('product.delete_drink_info')
 @login_required
 def delete_drink(request, pk):
-    d = Drink_info.objects.get(id=pk)
-    if d.useable_status:
-        d.useable_status = False
-        d.save()
-        return redirect('list_drink', status='True')
+    if pk != 1:
+        d = Drink_info.objects.get(id=pk)
+        if d.useable_status:
+            d.useable_status = False
+            d.save()
+            return redirect('list_drink', status='True')
+        else:
+            d.useable_status = True
+            d.save()
+            return redirect('list_drink', status='False')
     else:
-        d.useable_status = True
-        d.save()
-        return redirect('list_drink', status='False')
+        return redirect('list_drink', status='True')
 
 @permission_required('product.view_drink_info')
 @login_required

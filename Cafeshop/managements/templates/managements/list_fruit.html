@@ -78,10 +78,6 @@
     p{
         font-size: 20px;
     }
-    th,
-    td {
-        width: 20%;
-    }
 
     .thead-custom {
         background: linear-gradient(to right, #ff9966, #ff5e62);
@@ -118,7 +114,23 @@
         width: 100%;
         overflow-x: hidden;
     }
+    table.table-bordered { 
+        border: 1px solid transparent;
+        margin-top: 20px;
+    }
 
+    table.table-bordered>thead>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered>tbody>tr>td { 
+        border: 1px solid transparent;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0 1vh;
+    }
     @media only screen and (max-width: 1000px) {
         .list_r label {
             font-size: 16px;
@@ -143,10 +155,6 @@
         }
         p{
             font-size: 14px;
-        }
-        th,
-        td {
-            width: 20%;
         }
     }
 

@@ -61,6 +61,23 @@
     </div>
 </div>
 <style>
+    table.table-bordered { 
+        border: 1px solid transparent;
+        margin-top: 20px;
+    }
+
+    table.table-bordered>thead>tr>th {
+        border: 1px solid transparent;
+    }
+
+    table.table-bordered>tbody>tr>td { 
+        border: 1px solid transparent;
+    }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0 1vh;
+    }
     .titledrink{
         width: 100px;
         height: 150px;
@@ -78,10 +95,6 @@
     }
     p{
         font-size: 20px;
-    }
-    th,
-    td {
-        width: 20%;
     }
 
     .thead-custom {
@@ -144,10 +157,6 @@
         }
         p{
             font-size: 14px;
-        }
-        th,
-        td {
-            width: 20%;
         }
     }
 

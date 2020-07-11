@@ -74,27 +74,8 @@
         background-position: center;
         box-shadow: 4px 4px 5px 0px rgba(87, 87, 87, 1);
     }
-    .titledrink:hover{
-        transform: scale(1.05,1.05);
-    }
-    p{
-        font-size: 20px;
-    }
-    th,
-    td {
-        width: 20%;
-    }
 
-    .thead-custom {
-        background: linear-gradient(to right, #ff9966, #ff5e62);
-        background-attachment: fixed;
-    }
-
-    .table-bordered>tbody>tr>th {
-        border: 1px solid transparent;
-    }
-
-    table.table-bordered {
+    table.table-bordered { 
         border: 1px solid transparent;
         margin-top: 20px;
     }
@@ -103,9 +84,25 @@
         border: 1px solid transparent;
     }
 
-    table.table-bordered>tbody>tr>td {
+    table.table-bordered>tbody>tr>td { 
         border: 1px solid transparent;
     }
+
+    table {
+        border-collapse: separate;
+        border-spacing: 0 1vh;
+    }
+    .titledrink:hover{
+        transform: scale(1.05,1.05);
+    }
+    p{
+        font-size: 20px;
+    }
+    .thead-custom {
+        background: linear-gradient(to right, #ff9966, #ff5e62);
+        background-attachment: fixed;
+    }
+
 
     table {
         font-size: 18px;
@@ -144,10 +141,6 @@
         }
         p{
             font-size: 14px;
-        }
-        th,
-        td {
-            width: 20%;
         }
     }
     

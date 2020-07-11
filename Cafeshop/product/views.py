@@ -7,7 +7,7 @@ from product.forms import UserForm,CustomerForm,UserForm2
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group,User
 from django.utils import timezone
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
@@ -49,7 +49,6 @@ def index(request):
             promotion.save()
     promotions = promotions.filter(promo_status = True)
     drink_infos = Drink_info.objects.exclude(id=1).filter(useable_status=True)
-    print(drink_infos)
     options = Option.objects.filter(useable_status=True)
     fruits = Fruit.objects.filter(useable_status=True)
     context = {
@@ -76,8 +75,6 @@ def register(request):
             user.groups.add(group)
             registered = True
             #return redirect('login')
-        else:
-            print(user_form.errors,CustomerForm.errors)
     else:
         Customer_form = CustomerForm()
         user_form = UserForm()
@@ -100,12 +97,9 @@ def account_manage(request):
             Customer = Customer_form.save(commit=False)
             Customer.user = user
             Customer.save()
-            group = Group.objects.get(name='Customer')
-            user.groups.add(group)
-
             return redirect('user_info')
-        else:
-            print(form.errors,CustomerForm.errors) 
+        #else:
+            #print(form.errors,CustomerForm.errors) 
     else:
         form = UserForm2(instance=request.user)
         Customer_form = CustomerForm(instance=request.user.customer)
@@ -136,65 +130,65 @@ def password_reset(request):
 
 @csrf_exempt
 def api(request):
-    data = json.loads(request.body)
-    order_data = data['order']
-    print(order_data, 'WHEN ORDER COME')
-    order = Order()
-    if request.user.id != 1 :
-        order.c_id = Customer.objects.get(user__id=request.user.id)#instance
-        order.order_type = 'Online_buy'
-    else :
-        order.c_id = None
-        order.order_type = 'Local_buy'
-    order.total_price = order_data['total_price']
-    if order_data['promotion'] == 0:
-        order.promo_id = None
-    else:
-        order.promo_id = Promotion.objects.get(pk=order_data['promotion'])
-    order.save()
-    for item in order_data['cart']:
-        order_list = Order_list()
-        order_list.amount = item['amount']
-        order_list.unit_price = item['price_incTopping']
-        order_list.d_id = Drink_info.objects.get(pk=item['id'])
-        special = Special(special_type=item['kind'].capitalize()) 
-        special.save()
-        order_list.special_id = special
-        order_list.order_id = order
-        order_list.save()
-        if item['kind'] == 'juice':
-            juice = Juice()
-            juice.special_id = special
-            juice.save()
-            for fruit in item['fruit']:
-                jf = Juice_fruit()
-                jf.juice = juice
-                jf.fruit = Fruit.objects.get(pk=fruit['id'])
-                jf.amount = 1
-                jf.save()
-            for option in item['topping_list']:
-                jo = Juice_option()
-                jo.juice = juice 
-                jo.option = Option.objects.get(pk=option['id'])
-                jo.amount = option['amount']
-                jo.save()
-        elif item['kind'] == 'coffee':
-            coffee = Coffee_and_other()
-            coffee.specials = special
-            coffee.sweetness = item['sweetness']
-            coffee.save()
-            for option in item['topping_list']:
-                co = Coffee_and_other_option()
-                co.option = Option.objects.get(pk=option['id'])
-                co.Coffee_and_other = coffee
-                co.amount = option['amount']
-                co.save()
-        #order.save()
-    return JsonResponse(order_data, status=200)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        order_data = data['order']
+        order = Order()
+        if request.user.id != 1 and User.objects.filter(pk=request.user.id, groups__name='customer').exists():
+            order.c_id = Customer.objects.get(user__id=request.user.id)#instance
+            order.order_type = 'Online_buy'
+        else :
+            order.c_id = None
+            order.order_type = 'Local_buy'
+        order.total_price = order_data['total_price']
+        if order_data['promotion'] == 0:
+            order.promo_id = None
+        else:
+            order.promo_id = Promotion.objects.get(pk=order_data['promotion'])
+        order.save()
+        for item in order_data['cart']:
+            order_list = Order_list()
+            order_list.amount = item['amount']
+            order_list.unit_price = item['price_incTopping']
+            order_list.d_id = Drink_info.objects.get(pk=item['id'])
+            special = Special(special_type=item['kind'].capitalize()) 
+            special.save()
+            order_list.special_id = special
+            order_list.order_id = order
+            order_list.save()
+            if item['kind'] == 'juice':
+                juice = Juice()
+                juice.special_id = special
+                juice.save()
+                for fruit in item['fruit']:
+                    jf = Juice_fruit()
+                    jf.juice = juice
+                    jf.fruit = Fruit.objects.get(pk=fruit['id'])
+                    jf.amount = 1
+                    jf.save()
+                for option in item['topping_list']:
+                    jo = Juice_option()
+                    jo.juice = juice 
+                    jo.option = Option.objects.get(pk=option['id'])
+                    jo.amount = option['amount']
+                    jo.save()
+            elif item['kind'] == 'coffee':
+                coffee = Coffee_and_other()
+                coffee.specials = special
+                coffee.sweetness = item['sweetness']
+                coffee.save()
+                for option in item['topping_list']:
+                    co = Coffee_and_other_option()
+                    co.option = Option.objects.get(pk=option['id'])
+                    co.Coffee_and_other = coffee
+                    co.amount = option['amount']
+                    co.save()
+            #order.save()
+        return JsonResponse(order_data, status=200)
 
 @login_required
 def queue(request):
-    print(timezone.now())
+    #print(timezone.now())
     orders = Order.objects.filter(finish_flag=False)
     queue = []
     sweetness_name = {
@@ -297,7 +291,7 @@ def api_promotion(request):
     res = {
         'discount':0
     }
-    print(data)
+    #print(data)
     if int(data['id']) != 0:
         promotion = Promotion.objects.get(pk=data['id'])
         res = {

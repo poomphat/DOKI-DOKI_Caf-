@@ -44,7 +44,7 @@
                             <div class="container-fluid" style="margin-bottom: 4vh;">
                                 <div class="row">
                                     <div class="titledrink col-3 queue_item"
-                                        style="margin-top: 1vh; background-image:url('../managements{{ item.picture.url }}');" data-toggle="modal" data-target=".{{item.id}}-modal-lg">
+                                        style="margin-top: 1vh; background-image:url('../managements{{ item.picture.url }}');" data-toggle="modal" data-target=".{{item.id}}{{ forloop.counter }}-modal-lg">
                                     </div>
                                     <div class="col-6">
                                         <p class="text-primary">{{ forloop.counter }}). {{item.name}}</p>
@@ -69,7 +69,7 @@
                                         </ul>
                                         {% endif %}
                                         <p class="text-secondary">จำนวน : {{item.amount}}</p>
-                                        <div class="modal fade {{item.id}}-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                        <div class="modal fade {{item.id}}{{forloop.counter}}-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -134,10 +134,6 @@
         font-size: 20px;
     }
 
-    th,
-    td {
-        width: 20%;
-    }
 
     .thead-custom {
         background: linear-gradient(to right, #ff9966, #ff5e62);

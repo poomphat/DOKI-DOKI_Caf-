@@ -469,12 +469,12 @@
     }
 
     function addMenu(type) {
-        var a = document.getElementsByClassName("Iced");
-        var b = document.getElementsByClassName("Hot");
-        var c = document.getElementsByClassName("Frappe");
-        a[0].className = 'btn btn-secondary Iced col';
-        b[0].className = 'btn btn-secondary Hot col';
-        c[0].className = 'btn btn-secondary Frappe col';
+        var ice = document.getElementsByClassName("Iced");
+        var hot = document.getElementsByClassName("Hot");
+        var frap = document.getElementsByClassName("Frappe");
+        ice[0].className = 'btn btn-secondary Iced col';
+        hot[0].className = 'btn btn-secondary Hot col';
+        frap[0].className = 'btn btn-secondary Frappe col';
         deleteMenu();
         menuZone = document.getElementById('menuZone')
         //// AJAX call all drink
